@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@import "@fontsource/roboto/latin-400.css";
+@import "@fontsource/roboto/latin-600.css";
+
+@theme {
+  --breakpoint-wide: 64.0625rem;
+  --font-sans: "Roboto", Arial, sans-serif;
+  --color-joy-blue: #4885ed;
+  --color-joy-red: #db3236;
+  --color-joy-yellow: #ffc107;
+  --color-joy-green: #3cba54;
+  --color-search-border: #e6e6e6;
+  --color-search-muted: #70757a;
+  --color-result-link: #1a0dab;
+  --color-result-visited: #660099;
+}
+
+@layer base {
+  html {
+    font-size: 22px;
+  }
+
+  body {
+    @apply m-0 min-h-dvh bg-white font-sans text-black;
+  }
+}

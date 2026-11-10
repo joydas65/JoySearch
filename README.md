@@ -1,84 +1,88 @@
 # JoySearch
 
-A responsive Wikipedia search application built with **HTML**, **Sass**, and **vanilla JavaScript**.
+A responsive Wikipedia search app built with **Next.js App Router**, **React**, **TypeScript**, and **Tailwind CSS**.
 
-**[Live demo](https://joysearch.netlify.app/)**
+JoySearch keeps the original colorful logo, search layout, and mobile breakpoints while replacing standalone HTML, Sass, and DOM manipulation with React components and Tailwind utilities.
 
 ## Features
 
-- Search Wikipedia articles and display up to 20 results.
-- Show article titles, summaries, and available thumbnail images.
+- Search up to 20 Wikipedia articles, ordered by relevance.
+- Read summaries and view available article thumbnails.
 - Open full articles on Wikipedia.
-- Adapt the layout and summary length to the screen size.
-- Clear search terms using the mouse or keyboard.
-- Use modular JavaScript and Sass partials for maintainable code.
+- Use the search and clear controls with a keyboard or pointer.
+- See accessible loading, empty-result, and connection-error messages.
+- Search for terms containing `&`, `+`, `#`, and other special characters.
+- Cancel superseded requests so old results cannot replace a newer search.
+- Run as a static site with no backend, API keys, or environment variables.
 
 ## Run locally
 
-Clone this repository, then serve its root directory over HTTP:
+Use **Node.js 24 or newer** and **pnpm 11.25.0**.
 
 ```sh
 git clone https://github.com/joydas65/JoySearch.git
 cd JoySearch
-python3 -m http.server 8000
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-Open [http://localhost:8000](http://localhost:8000). An HTTP server is required because the app uses JavaScript modules; opening `index.html` directly with a `file://` URL may fail.
+Open [http://localhost:3000](http://localhost:3000).
 
-The compiled stylesheet is included, so no build step or API key is needed to run the app. An internet connection is required for Wikipedia requests, Google Fonts, and Font Awesome icons.
-
-## Edit styles
-
-The Sass entry point is `sass/style.scss`. With Node.js and npm installed, compile it using:
+## Checks and production build
 
 ```sh
-npx --yes sass@1.93.2 sass/style.scss sass/style.css
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
-To rebuild automatically while editing:
+The build exports a static site to `out/`. Preview the production output with any static HTTP server, for example:
 
 ```sh
-npx --yes sass@1.93.2 --watch sass/style.scss:sass/style.css
+python3 -m http.server 8000 --directory out
 ```
 
-The recovered Sass uses legacy `@import` rules. Dart Sass 1.93.2 supports these rules with deprecation warnings.
+Open [http://localhost:8000](http://localhost:8000). `next start` is not used because this app is configured with `output: "export"`.
+
+## Deploy to Netlify
+
+The included `netlify.toml` uses Node.js 24, build command `pnpm build`, and publish directory `out`. Connect this repository and the desired branch in Netlify, or upload the built `out` directory to a static host.
+
+The [existing JoySearch deployment](https://joysearch.netlify.app/) is the original app. This migration does not automatically reconnect or update that deployment.
 
 ## Project structure
 
 ```text
-index.html              Page structure and accessible search controls
-js/
-  main.js               Application initialization and search flow
-  dataFunctions.js      Wikipedia requests and result normalization
-  searchBar.js          Search input, clear button, and focus handling
-  searchResults.js      Result rendering and result count
-sass/
-  style.scss            Sass entry point
-  _base.scss            Colors, typography, mixins, and base layout
-  _sharedClasses.scss   Shared utility classes
-  _searchEntry.scss     Logo and search form styles
-  _searchResults.scss   Result layout and responsive styles
-  style.css             Compiled stylesheet
-  style.css.map         Stylesheet source map
+app/
+  layout.tsx                  Root document and metadata
+  page.tsx                    Home page and Wikipedia footer
+  globals.css                 Tailwind import, design tokens, and local fonts
+components/
+  joy-logo.tsx                Original JoySearch wordmark
+  search-app.tsx              Search form, request lifecycle, and UI states
+  search-results.tsx          Article links, thumbnails, and summaries
+lib/
+  wikipedia.ts               Typed Wikipedia API client
+tests/
+  wikipedia.test.ts          API normalization and failure regression tests
+next.config.ts               Static export configuration
+postcss.config.mjs           Tailwind CSS PostCSS integration
+netlify.toml                 Static hosting build configuration
 ```
 
-## How search works
+Edit colors and the font family in `app/globals.css`; layout and responsive styles live in each component's Tailwind classes. Roboto is bundled locally using Fontsource, and the search/clear icons use inline SVG, so rendering does not depend on font or icon CDNs.
 
-The browser calls the English Wikipedia Action API with `generator=search`, requesting article extracts and available page images. Results link to their Wikipedia page IDs. No backend or credentials are required.
+## Search and testing
 
-## Source recovery
+The browser calls the English Wikipedia Action API directly with `generator=search`, `pageimages`, `extracts`, and `origin=*`. Queries use `URLSearchParams`; summaries adapt to the viewport width. Requests time out after 15 seconds, and clearing or starting a new search cancels the previous request.
 
-This repository was restored on **10 November 2026** from the publicly served files at [joysearch.netlify.app](https://joysearch.netlify.app/). The deployed HTML, JavaScript, original Sass partials, compiled CSS, and source map were recovered. A hosting-injected advertising comment was removed from the HTML, and this README and `.gitignore` were added.
+`pnpm test` uses Node's test runner and mocked API responses to cover query encoding, normalization, responsive summary lengths, relevance ordering, optional thumbnails, empty results, failure responses, and cancellation. Real Wikipedia searches require an internet connection.
 
-The app's behavior and styling are preserved. The original Git history, repository configuration, and deployment configuration were not available from the site. Creating this repository does not change or reconnect the existing Netlify deployment.
+## Project history and credits
 
-### Known limitations in the recovered version
-
-- Network or Wikipedia API failures do not yet display a friendly error message.
-- Search terms containing an ampersand (`&`) are not independently URL-encoded and may produce unexpected results.
-
-## Credits
+The original HTML, JavaScript, and Sass sources were recovered from the public JoySearch deployment on 10 November 2026. They remain available in [the original source commit](https://github.com/joydas65/JoySearch/tree/3d96b4dc138922092be997a5bab6d0fca4a9e014). This migration replaces the old source files in the working application; no original pre-recovery Git history was available.
 
 - Project by [Joy Das](https://github.com/joydas65).
-- Search results and article content are provided by [Wikipedia](https://www.wikipedia.org/).
-- Icons: Font Awesome 5.15.1 via cdnjs. Typeface: Roboto via Google Fonts.
+- Article content and images are provided by [Wikipedia](https://www.wikipedia.org/).
+- Roboto is bundled through [Fontsource](https://fontsource.org/fonts/roboto).

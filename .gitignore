@@ -4,3 +4,7 @@ node_modules/
 *.log
 .env
 .env.*
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
