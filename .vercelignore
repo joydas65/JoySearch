@@ -1,0 +1,10 @@
+.env*
+.evaluation/
+.git/
+.vercel/
+.next/
+out/
+node_modules/
+*.tsbuildinfo
+*.log
+.DS_Store

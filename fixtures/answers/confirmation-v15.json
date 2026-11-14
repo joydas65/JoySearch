@@ -1,0 +1,470 @@
+{
+  "version": "owned-confirmation-v15",
+  "authoredOn": "2026-11-14",
+  "ownership": "All queries and passages were authored for JoySearch. Organizations, products, facts, values, and policies are fictional. URLs under example.com identify supplied passages and are never fetched.",
+  "purpose": "Fresh predeclared confirmation for mixed-model bounded routing and answer generation after earlier confirmation corpora became exposed. Measures supplied-evidence behavior, not search relevance or general web accuracy.",
+  "cases": [
+    {
+      "id": "ANS61",
+      "split": "holdout",
+      "category": "ambiguity_entity",
+      "query": "What is the occupancy limit for a Nova room?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Nova voice-room capacity",
+          "url": "https://example.com/joysearch-fixtures/nova/voice",
+          "excerpt": "The fictional Nova voice-chat service permits eight participants in one voice room. It is unrelated to the Nova planning application."
+        },
+        {
+          "id": "S2",
+          "title": "Nova planning-room capacity",
+          "url": "https://example.com/joysearch-fixtures/nova/planning",
+          "excerpt": "The fictional Nova planning application permits eighteen collaborators in one planning room. It is unrelated to the Nova voice-chat service."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "entity",
+            "description": "Ask whether the user means a Nova voice room or a Nova planning room before providing an occupancy number.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "The user definitely means the voice-chat service.",
+          "The user definitely means the planning application.",
+          "Every Nova room has the same occupancy limit."
+        ]
+      }
+    },
+    {
+      "id": "ANS62",
+      "split": "holdout",
+      "category": "ambiguity_address_type",
+      "query": "Where do I change my address in Brio?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Brio account email settings",
+          "url": "https://example.com/joysearch-fixtures/brio/email",
+          "excerpt": "In the fictional Brio application, a user changes their account email address in Profile Settings. This does not update their postal billing address."
+        },
+        {
+          "id": "S2",
+          "title": "Brio postal billing details",
+          "url": "https://example.com/joysearch-fixtures/brio/postal",
+          "excerpt": "In the fictional Brio application, a user changes their postal billing address in Billing Details. This does not change their account email address."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "address_type",
+            "description": "Ask whether the user means the account email address or postal billing address before choosing the settings location.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "Profile Settings changes every kind of address.",
+          "Billing Details changes the account email address.",
+          "The user has already identified which address they mean."
+        ]
+      }
+    },
+    {
+      "id": "ANS63",
+      "split": "holdout",
+      "category": "ambiguity_capacity_measure",
+      "query": "What is the capacity of my Dune workspace?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Dune workspace file capacity",
+          "url": "https://example.com/joysearch-fixtures/dune/files",
+          "excerpt": "A workspace in the fictional Dune application holds at most 22 GB of files."
+        },
+        {
+          "id": "S2",
+          "title": "Dune simultaneous editors",
+          "url": "https://example.com/joysearch-fixtures/dune/editors",
+          "excerpt": "A workspace in the fictional Dune application permits at most fourteen simultaneous editors. This editor-count limit is separate from its file-storage capacity."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "capacity_type",
+            "description": "Ask whether the user wants file-storage capacity or the number of simultaneous editors before providing a numerical capacity.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "The query explicitly asks about storage.",
+          "The query explicitly asks about editors.",
+          "Dune has only one capacity measure."
+        ]
+      }
+    },
+    {
+      "id": "ANS64",
+      "split": "holdout",
+      "category": "navigation_link_request",
+      "query": "Could you link the fictional Spruce disaster-recovery runbook?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Spruce theme customization",
+          "url": "https://example.com/joysearch-fixtures/spruce/themes",
+          "excerpt": "This fictional Spruce guide explains visual themes and color preferences. It does not cover disaster recovery."
+        },
+        {
+          "id": "S2",
+          "title": "Spruce disaster-recovery runbook",
+          "url": "https://example.com/joysearch-fixtures/spruce/recovery",
+          "excerpt": "This fictional Spruce operations runbook documents restoring the service after a disaster, including backup selection and recovery checks."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Select the supplied disaster-recovery runbook using S2.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The theme-customization page is the disaster-recovery runbook.",
+          "A disaster recovery has already been performed."
+        ]
+      }
+    },
+    {
+      "id": "ANS65",
+      "split": "holdout",
+      "category": "navigation_reference_request",
+      "query": "Show me the fictional Heron API authentication reference page.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Heron API authentication",
+          "url": "https://example.com/joysearch-fixtures/heron/authentication",
+          "excerpt": "This fictional Heron API reference documents authentication headers, credential formats, and authentication error responses."
+        },
+        {
+          "id": "S2",
+          "title": "Heron visual design guide",
+          "url": "https://example.com/joysearch-fixtures/heron/design",
+          "excerpt": "This fictional Heron guide documents interface colors and typography. It contains no API authentication reference."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Identify the API authentication reference using S1.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The visual design guide documents API authentication.",
+          "Authentication credentials have been changed for the user."
+        ]
+      }
+    },
+    {
+      "id": "ANS66",
+      "split": "holdout",
+      "category": "navigation_noun_phrase",
+      "query": "The fictional Coral command-line installation manual is what I am looking for.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Coral browser editor tour",
+          "url": "https://example.com/joysearch-fixtures/coral/browser",
+          "excerpt": "This fictional Coral page introduces its browser editor. It does not explain command-line installation."
+        },
+        {
+          "id": "S2",
+          "title": "Coral CLI installation manual",
+          "url": "https://example.com/joysearch-fixtures/coral/cli-install",
+          "excerpt": "This fictional Coral manual explains installing the command-line client on a local computer."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Direct the user to the command-line installation manual using S2 rather than the browser editor tour.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The browser editor tour is the command-line installation manual.",
+          "The command-line client has already been installed."
+        ]
+      }
+    },
+    {
+      "id": "ANS67",
+      "split": "holdout",
+      "category": "context_entity_and_day_boundary",
+      "query": "How many exports may each fictional Otter workspace run per UTC calendar day, and is that allowance shared by all workspace members?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Otter export allowance",
+          "url": "https://example.com/joysearch-fixtures/otter/exports",
+          "excerpt": "The fictional Otter application permits 55 exports per workspace per UTC calendar day. All members share that workspace allowance. It resets at midnight UTC; it is not a rolling 24-hour window and not an allowance for each member."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "quantity_unit",
+            "description": "State 55 exports per workspace per UTC calendar day, preserving the entity and time units.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "shared",
+            "description": "State that all members share the workspace allowance rather than receiving separate individual allowances.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Each member receives 55 exports per day.",
+          "The quota is 55 exports per rolling 24 hours.",
+          "The reset occurs at each user's local midnight."
+        ]
+      }
+    },
+    {
+      "id": "ANS68",
+      "split": "holdout",
+      "category": "context_plan_qualification",
+      "query": "Which fictional Plover plans include scheduled backups, and how often do those backups run?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Plover backup plans",
+          "url": "https://example.com/joysearch-fixtures/plover/backups",
+          "excerpt": "In the fictional Plover application, the Base plan has no scheduled backups. The Studio plan includes one scheduled backup every six hours. These are plan entitlements, not separate quotas per member."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "eligibility",
+            "description": "State that Studio includes scheduled backups and Base does not.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "frequency",
+            "description": "State that Studio scheduled backups run every six hours.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Every plan includes scheduled backups.",
+          "Base runs scheduled backups every six hours.",
+          "Studio runs a scheduled backup every six days."
+        ]
+      }
+    },
+    {
+      "id": "ANS69",
+      "split": "holdout",
+      "category": "context_dated_revision",
+      "query": "As of 14 November 2026, how long are fictional Aspen build logs retained per run, and what earlier duration was replaced on what date?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Aspen original build-log policy",
+          "url": "https://example.com/joysearch-fixtures/aspen/original",
+          "excerpt": "Aspen policy dated 8 July 2026: build logs for each run are retained for 60 days."
+        },
+        {
+          "id": "S2",
+          "title": "Aspen retention revision",
+          "url": "https://example.com/joysearch-fixtures/aspen/revision",
+          "excerpt": "Aspen policy revision dated 9 November 2026: effective that day, build logs for each run are retained for 45 days instead of the previous 60 days. The change applies to every plan."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "current",
+            "description": "State the current retention period as 45 days for each run's build logs on the requested date.",
+            "sourceIds": [
+              "S2"
+            ]
+          },
+          {
+            "id": "replacement",
+            "description": "State that the previous 60-day period was replaced effective 9 November 2026.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The current retention period is 60 days.",
+          "The new period applies only to paid plans.",
+          "The revision took effect on 8 July 2026."
+        ]
+      }
+    },
+    {
+      "id": "ANS70",
+      "split": "holdout",
+      "category": "control_explicit_comparison",
+      "query": "Compare pin limits in the unrelated fictional Stella Notes and Stella Canvas products. Give both limits and what each limit applies to.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Stella Notes pins",
+          "url": "https://example.com/joysearch-fixtures/stella/notes",
+          "excerpt": "The fictional Stella Notes application allows twenty pins per notebook. It is unrelated to Stella Canvas."
+        },
+        {
+          "id": "S2",
+          "title": "Stella Canvas pins",
+          "url": "https://example.com/joysearch-fixtures/stella/canvas",
+          "excerpt": "The fictional Stella Canvas application allows thirty pins per board. It is unrelated to Stella Notes."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "notes",
+            "description": "State twenty pins per notebook for Stella Notes.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "canvas",
+            "description": "State thirty pins per board for Stella Canvas.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The user must choose one product before this explicit comparison can be answered.",
+          "Both products have the same pin limit.",
+          "Stella Canvas allows thirty pins per notebook."
+        ]
+      }
+    },
+    {
+      "id": "ANS71",
+      "split": "holdout",
+      "category": "control_explicit_disambiguation",
+      "query": "In the fictional Tide calendar service, not the spreadsheet app with the same name, how many calendars are allowed per organization?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Tide spreadsheet rows",
+          "url": "https://example.com/joysearch-fixtures/tide/spreadsheets",
+          "excerpt": "The fictional Tide spreadsheet app permits 225 rows per sheet. It is unrelated to the Tide calendar service."
+        },
+        {
+          "id": "S2",
+          "title": "Tide calendar organizations",
+          "url": "https://example.com/joysearch-fixtures/tide/calendars",
+          "excerpt": "The fictional Tide calendar service permits 27 calendars per organization. This is separate from the unrelated Tide spreadsheet app's row limit."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "calendars",
+            "description": "State 27 calendars per organization for the explicitly identified calendar service.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The user has not identified which Tide product is intended.",
+          "The calendar limit is 225 per organization.",
+          "The 27-calendar limit applies per sheet."
+        ]
+      }
+    },
+    {
+      "id": "ANS72",
+      "split": "holdout",
+      "category": "control_same_entity_conflict",
+      "query": "The supplied Raven Cache documents disagree about entry lifetime. What lifetime does each document give, and do these excerpts establish which value governs?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Raven Cache operations document",
+          "url": "https://example.com/joysearch-fixtures/raven/operations",
+          "excerpt": "Raven Cache operations document, updated 14 November 2026: a stored entry expires after 43 seconds. This document does not describe an exception or a superseding policy."
+        },
+        {
+          "id": "S2",
+          "title": "Raven Cache API document",
+          "url": "https://example.com/joysearch-fixtures/raven/api",
+          "excerpt": "Raven Cache API document, updated 14 November 2026: a stored entry expires after 86 seconds. This document gives no explanation for the different lifetime in the operations document."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "lifetimes",
+            "description": "Attribute 43 seconds to the operations document and 86 seconds to the API document.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          },
+          {
+            "id": "unresolved",
+            "description": "Explicitly state that the conflicting excerpts do not establish which single lifetime governs.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "43 seconds is definitively the governing lifetime.",
+          "86 seconds is definitively the governing lifetime.",
+          "The discrepancy is explained by different plans or an announced migration.",
+          "The user needs to identify a different product before the same-product conflict can be described."
+        ]
+      }
+    }
+  ]
+}

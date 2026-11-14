@@ -1,0 +1,475 @@
+{
+  "version": "owned-confirmation-v3",
+  "authoredOn": "2026-11-14",
+  "ownership": "All queries and source passages were authored for JoySearch. Products, facts, values, policies, and organizations are fictional. example.com URLs identify supplied evidence and are never fetched.",
+  "purpose": "Fresh, predeclared confirmation of ambiguity, navigation, and material-context behavior, with negative controls against over-clarification. Distinct from old fixtures, search relevance, and real-world accuracy.",
+  "cases": [
+    {
+      "id": "ANS21",
+      "split": "holdout",
+      "category": "ambiguity_entity",
+      "query": "How long can I keep an Atlas session open?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Atlas terminal sessions",
+          "url": "https://example.com/joysearch-fixtures/atlas/terminal",
+          "excerpt": "The fictional Atlas terminal service closes an interactive terminal session after six hours. It is unrelated to the Atlas whiteboard product."
+        },
+        {
+          "id": "S2",
+          "title": "Atlas whiteboard sessions",
+          "url": "https://example.com/joysearch-fixtures/atlas/whiteboard",
+          "excerpt": "The fictional Atlas whiteboard product closes a guest collaboration session after forty-five minutes. It is unrelated to the Atlas terminal service."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "entity",
+            "description": "Ask whether the user means the Atlas terminal service or Atlas whiteboard before supplying a session duration.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "The user definitely means the terminal service.",
+          "The user definitely means the whiteboard product.",
+          "Both products have one shared session duration."
+        ]
+      }
+    },
+    {
+      "id": "ANS22",
+      "split": "holdout",
+      "category": "ambiguity_type",
+      "query": "How do I rotate my key in Kestrel?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Kestrel API credential rotation",
+          "url": "https://example.com/joysearch-fixtures/kestrel/api-keys",
+          "excerpt": "The fictional Kestrel application lets a user rotate a personal API key from Account Settings, then revoke the old API key after updating integrations."
+        },
+        {
+          "id": "S2",
+          "title": "Kestrel workspace encryption rotation",
+          "url": "https://example.com/joysearch-fixtures/kestrel/encryption",
+          "excerpt": "The fictional Kestrel application uses a separate workspace encryption key. Only a workspace administrator can rotate that key through the Encryption panel. API key rotation does not rotate this key."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "key_type",
+            "description": "Ask whether the user means the personal API key or workspace encryption key before choosing a rotation procedure.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "Account Settings rotates every kind of key.",
+          "Any user can rotate a workspace encryption key.",
+          "The user has already specified which key type to rotate."
+        ]
+      }
+    },
+    {
+      "id": "ANS23",
+      "split": "holdout",
+      "category": "ambiguity_measure",
+      "query": "What is Drift's size limit?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Drift attachment limit",
+          "url": "https://example.com/joysearch-fixtures/drift/attachments",
+          "excerpt": "In the fictional Drift workspace product, one attachment may be no larger than 18 MB."
+        },
+        {
+          "id": "S2",
+          "title": "Drift workspace capacity",
+          "url": "https://example.com/joysearch-fixtures/drift/capacity",
+          "excerpt": "A workspace in the fictional Drift product may store up to 3 GB in total. This total-storage limit is separate from the per-attachment size limit."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "measure",
+            "description": "Ask whether the user wants the per-attachment size limit or the total workspace storage limit before answering with a number.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "Drift has a single size limit applying to both attachments and total storage.",
+          "The query clearly specifies attachment size.",
+          "The query clearly specifies total workspace storage."
+        ]
+      }
+    },
+    {
+      "id": "ANS24",
+      "split": "holdout",
+      "category": "navigation_direct",
+      "query": "Take me to the supplied Vireo keyboard-shortcuts reference.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Vireo release history",
+          "url": "https://example.com/joysearch-fixtures/vireo/releases",
+          "excerpt": "The fictional Vireo release history lists version numbers and release dates. It does not contain the keyboard-shortcuts reference."
+        },
+        {
+          "id": "S2",
+          "title": "Vireo keyboard shortcuts",
+          "url": "https://example.com/joysearch-fixtures/vireo/shortcuts",
+          "excerpt": "This fictional Vireo reference page lists editor keyboard shortcuts grouped by navigation, selection, and formatting."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Identify and link the keyboard-shortcuts reference using S2.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The release history is the keyboard-shortcuts reference.",
+          "A keyboard shortcut was changed on the user's behalf."
+        ]
+      }
+    },
+    {
+      "id": "ANS25",
+      "split": "holdout",
+      "category": "navigation_paraphrase",
+      "query": "I need the official page for downloading the fictional Sable desktop client.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Sable desktop downloads",
+          "url": "https://example.com/joysearch-fixtures/sable/download",
+          "excerpt": "This is the fictional Sable project's official desktop-client download page. It provides installers for the supported desktop operating systems."
+        },
+        {
+          "id": "S2",
+          "title": "Sable browser workspace",
+          "url": "https://example.com/joysearch-fixtures/sable/browser",
+          "excerpt": "The fictional Sable browser workspace runs in a web browser. This page contains no desktop-client installers."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Direct the user to the supplied official desktop-client download page using S1.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The browser workspace supplies desktop installers.",
+          "An installer has already been downloaded or installed."
+        ]
+      }
+    },
+    {
+      "id": "ANS26",
+      "split": "holdout",
+      "category": "navigation_location",
+      "query": "Where is the installation guide for self-hosting the fictional Tern board?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Tern hosted service quickstart",
+          "url": "https://example.com/joysearch-fixtures/tern/hosted",
+          "excerpt": "This fictional Tern quickstart covers signing up for its hosted service. It does not describe installing Tern on your own server."
+        },
+        {
+          "id": "S2",
+          "title": "Tern self-hosting installation",
+          "url": "https://example.com/joysearch-fixtures/tern/self-hosting",
+          "excerpt": "This fictional Tern documentation page is the installation guide for running Tern board on your own server."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Identify the self-hosting installation guide using S2 rather than the hosted-service quickstart.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The hosted quickstart is a self-hosting installation guide.",
+          "Tern has already been installed on the user's server."
+        ]
+      }
+    },
+    {
+      "id": "ANS27",
+      "split": "holdout",
+      "category": "context_superseded_date",
+      "query": "As of 14 November 2026, what is the fictional Juniper API's daily job quota, and what earlier quota did the update replace?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Juniper launch quota",
+          "url": "https://example.com/joysearch-fixtures/juniper/launch",
+          "excerpt": "Juniper API launch notice dated 4 May 2026: each account can submit 70 jobs per day."
+        },
+        {
+          "id": "S2",
+          "title": "Juniper quota revision",
+          "url": "https://example.com/joysearch-fixtures/juniper/quota-update",
+          "excerpt": "Juniper API update dated 6 November 2026: effective that day, all accounts can submit 120 jobs per day. This replaces the previous 70-job daily quota."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "current",
+            "description": "State the current quota as 120 jobs per account per day on the requested date.",
+            "sourceIds": [
+              "S2"
+            ]
+          },
+          {
+            "id": "superseded",
+            "description": "State that the update replaced the earlier 70-job daily quota.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The current quota is 70 jobs per day.",
+          "The new quota is per hour.",
+          "The higher quota applies only to a paid plan."
+        ]
+      }
+    },
+    {
+      "id": "ANS28",
+      "split": "holdout",
+      "category": "context_scope_exception",
+      "query": "Does the fictional Elm Vault retain deleted items for the same time on every plan? Explain the Trial exception.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Elm Vault deletion policy",
+          "url": "https://example.com/joysearch-fixtures/elm/deletion",
+          "excerpt": "Elm Vault retains deleted items for 21 days on its Standard and Group plans. Its Trial plan is an exception: deleted items are retained for only five days. After the applicable retention period, the items cannot be restored."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "ordinary_scope",
+            "description": "State that Standard and Group retain deleted items for 21 days.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "trial_exception",
+            "description": "Explain that Trial instead retains deleted items for five days, so the period is not the same on every plan.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Every plan retains deleted items for 21 days.",
+          "Trial retains deleted items for 21 days.",
+          "Items remain restorable indefinitely after retention ends."
+        ]
+      }
+    },
+    {
+      "id": "ANS29",
+      "split": "holdout",
+      "category": "context_multiple_facets",
+      "query": "When transferring a fictional Wren document to a new workspace, which export format can be imported, and are comments and attachments preserved?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Wren document transfer",
+          "url": "https://example.com/joysearch-fixtures/wren/transfer",
+          "excerpt": "The fictional Wren editor exports documents as .wren bundles or plain-text .txt files. Only .wren bundles can be imported into another Wren workspace. A .wren import preserves document text and attachments. Comments are excluded from the bundle and are not restored."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "format",
+            "description": "Specify that .wren bundles can be imported; plain-text .txt exports cannot be imported through this transfer flow.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "comments",
+            "description": "State that comments are excluded and not preserved by transfer.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "attachments",
+            "description": "State that attachments are preserved by importing the .wren bundle.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Plain-text .txt exports can be imported into Wren workspaces.",
+          "Comments are preserved by a .wren import.",
+          "Attachments are lost during a .wren import."
+        ]
+      }
+    },
+    {
+      "id": "ANS30",
+      "split": "holdout",
+      "category": "control_explicit_comparison",
+      "query": "Compare the timeout of the fictional Solace console with the timeout of the unrelated Solace notebook. Give both durations.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Solace console timeout",
+          "url": "https://example.com/joysearch-fixtures/solace/console",
+          "excerpt": "The fictional Solace console terminates an inactive session after nine minutes. This product is unrelated to Solace notebook."
+        },
+        {
+          "id": "S2",
+          "title": "Solace notebook timeout",
+          "url": "https://example.com/joysearch-fixtures/solace/notebook",
+          "excerpt": "The fictional Solace notebook terminates an inactive session after twenty-seven minutes. This product is unrelated to Solace console."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "console",
+            "description": "Give the console's nine-minute inactive-session timeout.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "notebook",
+            "description": "Give the notebook's twenty-seven-minute inactive-session timeout.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The user must choose one product before the requested comparison can be answered.",
+          "Both products have the same timeout."
+        ]
+      }
+    },
+    {
+      "id": "ANS31",
+      "split": "holdout",
+      "category": "control_explicit_disambiguation",
+      "query": "For the fictional Haven image API, not the unrelated Haven message service, how many images may one batch contain?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Haven message batches",
+          "url": "https://example.com/joysearch-fixtures/haven/messages",
+          "excerpt": "The fictional Haven message service accepts up to 90 messages in a batch. It is unrelated to the Haven image API."
+        },
+        {
+          "id": "S2",
+          "title": "Haven image batches",
+          "url": "https://example.com/joysearch-fixtures/haven/images",
+          "excerpt": "The fictional Haven image API accepts at most 11 images in one batch. This image-batch limit is independent of the unrelated Haven message service."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "image_limit",
+            "description": "Give the image API limit of 11 images per batch without substituting the message-service limit.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The user has not identified which Haven service is intended.",
+          "The image API allows 90 images in a batch."
+        ]
+      }
+    },
+    {
+      "id": "ANS32",
+      "split": "holdout",
+      "category": "control_same_entity_conflict",
+      "query": "The supplied pages disagree about the fictional Rowan sync service's retry window. What does each say, and can these excerpts establish one definitive value?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Rowan sync operations page",
+          "url": "https://example.com/joysearch-fixtures/rowan/operations",
+          "excerpt": "Rowan sync operations page, updated 12 November 2026: retry an interrupted sync within eight minutes. This page does not discuss exceptions or an alternative retry window."
+        },
+        {
+          "id": "S2",
+          "title": "Rowan sync reference page",
+          "url": "https://example.com/joysearch-fixtures/rowan/reference",
+          "excerpt": "Rowan sync reference page, updated 12 November 2026: retry an interrupted sync within sixteen minutes. This page gives no explanation for a different duration elsewhere."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "both_values",
+            "description": "Attribute eight minutes to the operations page and sixteen minutes to the reference page.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          },
+          {
+            "id": "unresolved",
+            "description": "Explicitly state that the conflicting excerpts do not establish one definitive retry window.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Eight minutes is definitively correct.",
+          "Sixteen minutes is definitively correct.",
+          "The discrepancy is explained by different plans or a documented migration.",
+          "The user needs to identify which service before the same-service conflict can be described."
+        ]
+      }
+    }
+  ]
+}

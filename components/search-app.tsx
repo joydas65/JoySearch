@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { searchWikipedia, type SearchResult } from "@/lib/wikipedia";
+import { searchWeb } from "@/lib/search/client";
+import type { SearchResponse } from "@/lib/search/types";
 import { JoyLogo } from "./joy-logo";
 import { SearchResults } from "./search-results";
+import { CitedAnswer } from "./cited-answer";
 
 type SearchState =
   | { status: "idle" }
   | { status: "loading"; term: string }
-  | { status: "success"; term: string; results: SearchResult[] }
+  | ({ status: "success"; term: string } & SearchResponse)
   | { status: "error"; message: string };
 
 export function SearchApp() {
@@ -45,19 +47,16 @@ export function SearchApp() {
     }, 15000);
 
     try {
-      const results = await searchWikipedia(term, {
-        signal: request.signal,
-        width: window.innerWidth,
-      });
+      const response = await searchWeb(term, { signal: request.signal });
       if (requestRef.current === request) {
-        setSearch({ status: "success", term, results });
+        setSearch({ status: "success", term, ...response });
       }
     } catch (error) {
       if (requestRef.current === request) {
         setSearch({
           status: "error",
           message: request.signal.reason?.name === "TimeoutError"
-            ? "Wikipedia took too long to respond. Please try again."
+            ? "Search took too long to respond. Please try again."
             : error instanceof Error
               ? error.message
               : "We couldn’t complete your search. Please try again.",
@@ -78,21 +77,21 @@ export function SearchApp() {
   }
 
   let statusMessage = "";
-  if (search.status === "loading") statusMessage = `Searching Wikipedia for “${search.term}”…`;
+  if (search.status === "loading") statusMessage = `Searching the web for “${search.term}”…`;
   if (search.status === "success") {
     statusMessage = search.results.length
-      ? `Displaying ${search.results.length} results`
+      ? `Displaying ${search.results.length} ${search.results.length === 1 ? "result" : "results"} from ${search.provider === "exa" ? "Exa" : "Brave Search"}`
       : `Sorry, no results for “${search.term}”. Try another search.`;
   }
 
   return (
     <>
       <section aria-labelledby="search-heading" className="flex w-full flex-col items-center pt-[40px]">
-        <h2 id="search-heading" className="sr-only">Search Wikipedia</h2>
+        <h2 id="search-heading" className="sr-only">Search the web</h2>
         <JoyLogo />
         <form
           role="search"
-          aria-label="Wikipedia"
+          aria-label="Web search"
           onSubmit={submitSearch}
           className="flex w-[90vw] rounded-full border-2 border-search-border py-[0.15rem] pr-[0.25rem] pl-[0.75rem] hover:shadow-[0_2px_5px_2px_#e6e6e6] focus-within:border-joy-blue focus-within:shadow-[0_2px_5px_2px_#e6e6e6] md:w-[80vw] md:px-[1.5rem] md:py-[1.25rem] wide:w-[60vw]"
         >
@@ -103,6 +102,7 @@ export function SearchApp() {
             type="text"
             role="searchbox"
             autoComplete="off"
+            maxLength={600}
             enterKeyHint="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -122,7 +122,7 @@ export function SearchApp() {
           ) : null}
           <button
             type="submit"
-            aria-label="Search Wikipedia"
+            aria-label="Search the web"
             className="flex min-h-[48px] min-w-[48px] shrink-0 cursor-pointer items-center justify-center text-joy-blue hover:text-joy-green focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-joy-blue md:pl-[1rem]"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="size-[1rem] md:size-[1.5rem]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
@@ -139,6 +139,9 @@ export function SearchApp() {
         </p>
         {search.status === "error" ? (
           <p role="alert" className="w-full text-[0.75rem] text-joy-red md:text-[1rem]">{search.message}</p>
+        ) : null}
+        {search.status === "success" && search.results.length > 0 && search.answerContext ? (
+          <CitedAnswer key={search.answerContext} contextToken={search.answerContext} />
         ) : null}
         {search.status === "success" ? <SearchResults results={search.results} /> : null}
       </section>
