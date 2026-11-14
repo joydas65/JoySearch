@@ -1,6 +1,6 @@
 # JoySearch deployment and spending controls
 
-Prepared 14 November 2026. **Release verification pending.** Hosted controls are implemented and a separate Neon database has been provisioned on the existing Free plan. This document does not yet claim a successful public release.
+Prepared 14 November 2026; release verified 15 November 2026 (IST). **The public search-and-answer smoke passed.** Hosted controls use a separate Neon database on the existing Free plan. [Pull request #2](https://github.com/joydas65/JoySearch/pull/2) publishes the reviewed source and remains open, unmerged. Published release commit `4624fc3` exactly matches the deployed source tree; the provenance and later documentation-only update are recorded below.
 
 ## Release record
 
@@ -9,16 +9,31 @@ Prepared 14 November 2026. **Release verification pending.** Hosted controls are
 | Repository | [joydas65/JoySearch](https://github.com/joydas65/JoySearch) |
 | Vercel team | `joydas0111-7078s-projects` |
 | Vercel project | `joysearch` |
-| Production origin | `https://joysearch.vercel.app` |
-| Pull request / commit | Pending release preparation |
-| Verified deployment URL / state | Pending deployment verification |
-| Paid-work enablement | Disabled until allocation, controls, and release checks are verified |
+| Production origin | [joysearch.vercel.app](https://joysearch.vercel.app) |
+| Pull request | [#2](https://github.com/joydas65/JoySearch/pull/2) — open, unmerged |
+| Deployed source commit | `7685388a8c4c6eb8cd716ef68af33466d26e92d6` |
+| Published release source | [4624fc3](https://github.com/joydas65/JoySearch/commit/4624fc3abfd169bfb7fd83fe358f30c89f914ac7) |
+| Verified identical source tree | `d8cfdb4c00b28b18bf83434bc04cc6caa9b0abe8` for both deployed and published release commits; Git diff empty |
+| Deployment | `dpl_QEvn3gEissYbww2jXV3Lsdd6n2gr` — production, READY, promoted to the canonical origin |
+| Immutable deployment URL | [joysearch-sd92zffoa-joydas0111-7078s-projects.vercel.app](https://joysearch-sd92zffoa-joydas0111-7078s-projects.vercel.app) — Vercel protection applies |
+| Paid-work enablement | Production flag and SQL budget enabled after the disabled-state checks |
+| Budget snapshot after smoke | $0.017 hosted committed; $0.983 hosted and $0.078 local remaining |
 
 Use the existing Hobby hosting and Neon Free plan. No purchase, credit top-up, subscription upgrade, or recurring paid infrastructure is part of this release. Plan limits can make the demo unavailable; availability is subordinate to the spending bound.
 
+## Verified release checks
+
+- Lint, TypeScript, **100 network-free tests**, and the production Webpack build passed. **Eleven real-Postgres scenarios** ran in an isolated temporary schema and verified concurrency, exact cap boundaries, duplicate rejection, retained failed reservations, idempotent settlement, restricted runtime permissions, malformed metadata, price anomalies, migration preservation, and missing state.
+- The promoted canonical page returned HTTP 200 with the updated web-search UI. Before enablement, a valid same-origin search returned HTTP 503, “Live requests are currently paused”; the hosted committed amount remained zero. A request using the staged deployment origin returned HTTP 403. Mocked route tests also verify that preview and foreign-origin requests cannot dispatch paid work.
+- At **2026-11-14 19:02 UTC**, the browser searched “What is the capital of France?” once and explicitly generated one cited answer. It displayed ten Exa results, two answer claims, six citation links, and five supplied sources. Browser warning/error logs were empty. Both operations settled as `success` in Postgres; the answer recorded two model calls, 1,789 input tokens, 155 output tokens, and complete usage.
+- The search reported $0.007 and retained its $0.007 reservation; the answer retained its full $0.010 reservation. A read-only check at approximately 19:04 UTC confirmed the enabled $1.000 hosted cap, $0.017 committed, and $0.983 remaining. With $0.078 local, **$1.061** remained under the original authorization. Later visitor traffic can reduce this snapshot.
+- Application completion logs recorded **436 ms for search** and **3,827 ms for the answer**. These are one-request server measurements, not browser end-to-end timings or percentiles. The deployment's warning/error/fatal log scan for the preceding 30 minutes returned no matching entries; the expected disabled-state refusal appeared as an informational event.
+
+The deployed local commit and the published release commit have different commit IDs because the source was published through GitHub's web editor. Their tree IDs are identical and their Git diff is empty. The subsequent release-record update changes only `README.md`, this runbook, and `docs/milestone-1/architecture-plan.md`; it does not change the deployed application or constitute another paid quality evaluation. The historical owned-case quality result remains separate from this integration smoke.
+
 ## Budget ownership
 
-The original $5 experiment has $3.922 in conservative commitments and $1.078 remaining before this release. Reserve **$1.000** once in the original local ledger for the hosted demo; leave **$0.078** locally. The hosted ledger tracks consumption within that transferred allocation. It is not another dollar added to the original authorization, and its operations must not also be deducted a second time from the local remainder.
+Before this release, the original $5 experiment had $3.922 in conservative commitments and $1.078 remaining. A fixed **$1.000** was reserved once in the original local ledger for the hosted demo, leaving **$0.078** locally. The local ledger therefore records $4.922 committed, including the allocation. The hosted ledger tracks consumption within that transferred allocation. It is not another dollar added to the original authorization, and its operations must not also be deducted a second time from the local remainder. After the $0.017 smoke reservation, the combined remaining authorization was $1.061; this is conservative accounting, not a claim about final provider invoices.
 
 | Hosted operation | Reservation |
 | --- | ---: |
@@ -44,7 +59,7 @@ The current reservations cover the fixed request shapes and verified rate cards.
 | `ANSWER_CONTEXT_SECRET` | Production Secret, independently generated hexadecimal key of at least 32 random bytes |
 | `SEARCH_PROVIDER=exa` | Production Config selecting the verified provider |
 | `JOYSEARCH_ORIGIN=https://joysearch.vercel.app` | Production Config; exact canonical HTTPS origin, with no trailing slash |
-| `JOYSEARCH_LIVE_ENABLED` | Production Config; keep `false` until release verification permits `true` |
+| `JOYSEARCH_LIVE_ENABLED=true` | Production Config enabled for this verified release; new reservations also require the SQL budget to remain enabled |
 | Neon owner/migration credentials | Development/operator use only; never attach to production or previews |
 
 Do not set Vercel's system environment variables manually. Hosted requests require its production environment, the explicit live flag, and matching request URL, Host, and Origin. Forwarded headers do not grant access. Alternate domains and preview deployments cannot start paid work. Previews must not receive production provider keys, the signing key, or the runtime database secret.

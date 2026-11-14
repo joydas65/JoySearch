@@ -19,9 +19,9 @@ This personal portfolio project demonstrates engineering judgment through explic
 - Evaluate answer support and task completion on owned fictional documents, separately from citation-ID validity.
 - Reserve hosted API costs atomically in Neon Postgres before dispatch, with a permanent global allowance, signed-session limits, replay rejection, and an operator kill switch.
 
-Hosted spending controls are implemented; public release verification is pending. Production paid requests require the exact configured origin, explicit enablement, and an initialized, enabled budget database. Preview deployments keep paid routes disabled. See the [deployment runbook](docs/deployment.md) for release status and operational controls.
+The [public demo](https://joysearch.vercel.app) passed its production search-and-answer smoke check on 15 November 2026 (IST). [Pull request #2](https://github.com/joydas65/JoySearch/pull/2) publishes the reviewed source and remains open for review. Production paid requests require the exact configured origin, explicit enablement, and an initialized, enabled budget database. Preview deployments keep paid routes disabled. See the [deployment runbook](docs/deployment.md) for the verified deployment, source provenance, and operational controls.
 
-The original experiment has **$1.078** remaining before release verification. A fixed **$1.000** allocation is reserved for the hosted demo, leaving **$0.078** for local work; the two paths cannot each spend the same allowance. Hosted searches reserve **$0.007** for Exa, and answers reserve **$0.01**. Failed, cancelled, uncertain, and cheaper requests keep their full reservations. Redeployment, session expiry, and lower provider charges do not reset or replenish the global allowance.
+The original experiment had **$1.078** remaining before release verification. A fixed **$1.000** allocation is reserved for the hosted demo, leaving **$0.078** for local work; the two paths cannot each spend the same allowance. The successful release smoke reserved **$0.017**, leaving **$0.983 hosted + $0.078 local = $1.061** at verification time. This is conservative remaining authorization, not a provider invoice balance. Hosted searches reserve **$0.007** for Exa, and answers reserve **$0.01**. Failed, cancelled, uncertain, and cheaper requests keep their full reservations. Redeployment, session expiry, and lower provider charges do not reset or replenish the global allowance.
 
 ## Run locally
 
@@ -97,6 +97,8 @@ pnpm build
 ```
 
 Routine tests use synthetic responses and temporary ledgers; they do not call paid services. Coverage includes request construction, evidence preservation, unsafe URLs, malformed data, cancellation, budget limits, concurrency locks, uncertain charges, and replay protection. Hosted route tests exercise the actual handlers and SDK parsing with mocked Neon, Exa, and Gateway responses, including duplicate dispatch prevention and failure before paid work when budget state is unavailable.
+
+Release validation passed **100 network-free tests**, lint, TypeScript checks, and a production Webpack build. **Eleven isolated real-Postgres scenarios** verified concurrent reservations, cap boundaries, replay handling, settlement, migration preservation, and runtime permissions. One production browser smoke returned ten Exa results and completed a two-claim cited answer; both durable reservations settled successfully. A single smoke check verifies integration, not general search quality or a production latency percentile.
 
 The app needs a Next.js server for `POST /api/search` and `POST /api/answer`; it no longer exports an `out/` directory. `next start` previews the UI, but live hosted requests require Vercel's production environment and the configured production origin. A successful build is not evidence of a deployed live service.
 

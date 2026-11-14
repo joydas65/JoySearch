@@ -1,6 +1,6 @@
 # JoySearch architecture plan
 
-Initial plan: 11 November 2026. Updated 14 November 2026 for the focused personal-project milestone. Product constraints: [design brief](design-brief.md).
+Initial plan: 11 November 2026. Updated 15 November 2026 for the verified personal-project release. Product constraints: [design brief](design-brief.md).
 
 ## Implemented search, answers, and hosted spending controls
 
@@ -20,7 +20,7 @@ Hosted requests require Vercel production, explicit `JOYSEARCH_LIVE_ENABLED=true
 
 Missing or ambiguous database responses fail closed. Failures, disconnects, and cheaper responses never refund reservations. Settlement persists bounded operational metadata and must complete before the final answer event. Database state persists across releases and has no automatic expiry or allowance reset. The operator SQL kill switch blocks new reservations immediately; existing in-flight work remains reserved. Anonymous session rotation can exhaust the allowance, so the global cap remains authoritative. The cap relies on the verified provider request shapes and prices; a reported search overage is recorded and disables new dispatch rather than being silently ignored.
 
-Public release verification remains pending; the [deployment runbook](../deployment.md) records the target, controls, and release checks. Durable research remains a proposal. The implemented scope is one Next.js app, a small accounting database, at most two bounded model calls per optional answer, and reviewable quality evidence.
+The [public deployment](https://joysearch.vercel.app) passed a browser search-and-answer smoke on 15 November 2026 (IST). Both operations settled successfully, committing $0.017 and leaving $0.983 hosted plus $0.078 local at verification time. Release checks also passed 100 network-free tests and eleven isolated real-Postgres scenarios. [Pull request #2](https://github.com/joydas65/JoySearch/pull/2) is open and unmerged; its published release commit `4624fc3abfd169bfb7fd83fe358f30c89f914ac7` has the same tree (`d8cfdb4c00b28b18bf83434bc04cc6caa9b0abe8`) as deployed source commit `7685388a8c4c6eb8cd716ef68af33466d26e92d6`. The [deployment runbook](../deployment.md) records deployment `dpl_QEvn3gEissYbww2jXV3Lsdd6n2gr`, controls, measurement limits, and the subsequent documentation-only release-record update. Durable research remains a proposal. The implemented scope is one Next.js app, a small accounting database, at most two bounded model calls per optional answer, and reviewable quality evidence.
 
 ```mermaid
 sequenceDiagram
