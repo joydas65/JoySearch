@@ -18,8 +18,9 @@ This personal portfolio project demonstrates engineering judgment through explic
 - Preserve search results when generation fails, times out, is cancelled, or has insufficient evidence.
 - Evaluate answer support and task completion on owned fictional documents, separately from citation-ID validity.
 - Reserve hosted API costs atomically in Neon Postgres before dispatch, with a permanent global allowance, signed-session limits, replay rejection, and an operator kill switch.
+- Explore explicitly labeled, owned samples of answers, clarification, navigation, missing evidence, and failures without search/model requests or API credentials.
 
-The [public demo](https://joysearch.vercel.app) passed its production search-and-answer smoke check on 15 November 2026 (IST). [Pull request #2](https://github.com/joydas65/JoySearch/pull/2) publishes the reviewed source and remains open for review. Production paid requests require the exact configured origin, explicit enablement, and an initialized, enabled budget database. Preview deployments keep paid routes disabled. See the [deployment runbook](docs/deployment.md) for the verified deployment, source provenance, and operational controls.
+The [public demo](https://joysearch.vercel.app) passed its production search-and-answer smoke check on 15 November 2026 (IST). [Pull request #2](https://github.com/joydas65/JoySearch/pull/2) was merged as `952ab19`; that source was deployed and verified without further paid API calls. Production paid requests require the exact configured origin, explicit enablement, and an initialized, enabled budget database. Preview deployments keep paid routes disabled. See the [deployment runbook](docs/deployment.md) for the verified deployment, source provenance, and operational controls.
 
 The original experiment had **$1.078** remaining before release verification. A fixed **$1.000** allocation is reserved for the hosted demo, leaving **$0.078** for local work; the two paths cannot each spend the same allowance. The successful release smoke reserved **$0.017**, leaving **$0.983 hosted + $0.078 local = $1.061** at verification time. This is conservative remaining authorization, not a provider invoice balance. Hosted searches reserve **$0.007** for Exa, and answers reserve **$0.01**. Failed, cancelled, uncertain, and cheaper requests keep their full reservations. Redeployment, session expiry, and lower provider charges do not reset or replenish the global allowance.
 
@@ -29,12 +30,12 @@ Use **Node.js 24 or newer** and **pnpm 11.25.0**.
 
 ```sh
 pnpm install --frozen-lockfile
-# On a new checkout only; preserve an existing .env.local.
-cp .env.example .env.local
 pnpm dev --hostname 127.0.0.1
 ```
 
-Fill `EXA_API_KEY` and `BRAVE_SEARCH_API_KEY` in `.env.local` locally. Never use `NEXT_PUBLIC_` for credentials. `SEARCH_PROVIDER` defaults to `exa`; set it to `brave` to inspect that provider with the same UI. Restart the development server after changing credentials or provider selection.
+Open [sample mode locally](http://127.0.0.1:3000/samples). Choose an example, load its authored results, then play the sample answer. Citations open the owned fictional passages included with the app. Sample playback uses the shared answer/results UI, makes no API calls, and works without an environment file. Its delays and outcomes are predetermined demonstrations, not measured model performance. Live search remains an explicit separate destination.
+
+For optional **paid live development**, create `.env.local` from `.env.example` only on a new checkout; preserve an existing file. Fill `EXA_API_KEY` and `BRAVE_SEARCH_API_KEY` locally. Never use `NEXT_PUBLIC_` for credentials. `SEARCH_PROVIDER` defaults to `exa`; set it to `brave` to inspect that provider with the same UI. Restart the development server after changing credentials or provider selection. Live work still requires the original evaluation ledger and remaining authorization; samples do not require or reset that ledger.
 
 For cited answers, also configure `AI_GATEWAY_API_KEY` and a random `ANSWER_CONTEXT_SECRET` (at least 32 bytes encoded as hex). Preserve existing values; no secrets belong in source control or client variables. Search still works when answer credentials are absent. The intent router is fixed to `openai/gpt-5-mini` with minimal reasoning; the factual writer defaults to `openai/gpt-4.1-mini` at temperature 0. Their dated rate cards and settings live in `lib/answer/model.ts`. This pairing passes the declared gates on twelve fresh owned cases; see the [measured revision report](docs/milestone-2/revision-results.md) for evidence and limits. Changing the model or workflow requires a fresh budget and quality evaluation.
 
@@ -90,15 +91,19 @@ The [answer-quality revision](docs/milestone-2/revision-results.md) passes all d
 ## Checks and build
 
 ```sh
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
+pnpm exec playwright install chromium
+pnpm check:release
 ```
+
+The release command runs lint, route/type checks, offline regression tests, a production Webpack build, and Chromium browser tests in an isolated source copy. It excludes all `.env*` files, private ledgers, and deployment metadata and strips inherited provider/database credentials. The browser server keeps live requests disabled; browser fixtures block unexpected external and API requests. On Linux, use `pnpm exec playwright install --with-deps chromium` for the browser's system dependencies. `pnpm check:release --keep` retains the isolated directory for inspection. The GitHub Actions `release-checks` job runs the same command without secrets, paid evaluations, or artifact uploads.
+
+For individual development checks, `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build --webpack` remain available. Use the isolated command for the complete release check; invoking Playwright directly is refused to avoid accidentally starting a server with local credentials.
 
 Routine tests use synthetic responses and temporary ledgers; they do not call paid services. Coverage includes request construction, evidence preservation, unsafe URLs, malformed data, cancellation, budget limits, concurrency locks, uncertain charges, and replay protection. Hosted route tests exercise the actual handlers and SDK parsing with mocked Neon, Exa, and Gateway responses, including duplicate dispatch prevention and failure before paid work when budget state is unavailable.
 
-Release validation passed **100 network-free tests**, lint, TypeScript checks, and a production Webpack build. **Eleven isolated real-Postgres scenarios** verified concurrent reservations, cap boundaries, replay handling, settlement, migration preservation, and runtime permissions. One production browser smoke returned ten Exa results and completed a two-claim cited answer; both durable reservations settled successfully. A single smoke check verifies integration, not general search quality or a production latency percentile.
+Milestone 3 local release validation passed **106 offline tests**, **9 Chromium browser tests**, lint, TypeScript checks, and a production Webpack build. The browser checks cover samples, source inspection, keyboard/mobile use, cancellation, stale responses, valid and invalid live-protocol fixtures, and disabled-route rejection. They make no paid API calls and do not measure live model quality.
+
+The earlier hosted release separately passed **eleven isolated real-Postgres scenarios** verifying concurrent reservations, cap boundaries, replay handling, settlement, migration preservation, and runtime permissions. One production browser smoke returned ten Exa results and completed a two-claim cited answer; both durable reservations settled successfully. These historical database and paid integration checks are not rerun by routine CI. A single smoke check verifies integration, not general search quality or a production latency percentile.
 
 The app needs a Next.js server for `POST /api/search` and `POST /api/answer`; it no longer exports an `out/` directory. `next start` previews the UI, but live hosted requests require Vercel's production environment and the configured production origin. A successful build is not evidence of a deployed live service.
 
@@ -117,18 +122,22 @@ Anonymous visitors can obtain new sessions and use up the global demo allowance.
 - [Exa versus Brave evaluation](docs/milestone-1/provider-evaluation.md): protocol, quality gates, and pending final provider decision.
 - [Evaluation corpus](docs/milestone-1/evaluation-queries.json): 60 original queries, including 12 development and 48 holdout queries.
 - [Deployment runbook](docs/deployment.md): budget allocation, credential boundaries, release checks, and shutdown.
+- [Sample mode and automated release checks](docs/milestone-3/release-checks.md): no-spend boundary, failure-path checks, and measurement limits.
 
 ## Project structure
 
 ```text
 app/api/search/route.ts     Server-side search with local or hosted budget accounting
 app/api/answer/route.ts     Session-bound, budgeted cited-answer stream
+app/samples/               Explicit sample experience and owned source passages
+components/sample-app.tsx  Sample selection and cancellation through the shared answer UI
 components/search-app.tsx  Search form, accessible states, and cancellation
 components/search-results.tsx  Generic source links and excerpts
 lib/search/client.ts       Validated browser-to-server client
 lib/search/providers.ts    Exa and Brave HTTP adapters and normalization
 lib/search/types.ts        Provider-neutral result contracts
 lib/answer/                Evidence packing, signatures, structured intent routing, generation, stream validation
+lib/sample/                Authored fictional scenarios and in-memory playback
 lib/local-request.ts       Local-origin policy and bounded request-body parsing
 lib/evaluation.ts          Durable local ledger, scheduling, and summaries
 lib/hosted-request.ts      Production-origin policy and signed anonymous sessions
@@ -136,8 +145,11 @@ lib/hosted-budget.ts       Fail-closed Neon reservation and settlement boundary
 scripts/sql/hosted-budget.sql  Atomic hosted accounting and restricted runtime grants
 scripts/evaluate-search.ts Evaluation CLI and reproducibility manifests
 scripts/evaluate-answers.ts Owned-evidence generation and support-review CLI
+scripts/release-check.ts   Credential-free source isolation and release checks
 fixtures/answers/          Authored evaluation corpus and expected behavior
 tests/                    Network-free regression tests
+tests/browser/            Sample and mocked live-UI browser checks
+.github/workflows/         Automated release checks without deployment credentials
 docs/milestone-1/          Design and evaluation artifacts
 docs/milestone-2/          Cited-answer protocol and measured results
 .agents/skills/build-with-exa/  Canonical installed Exa integration guidance

@@ -13,7 +13,11 @@ type AnswerState =
 
 const buttonClass = "min-h-11 rounded-full border border-joy-blue px-4 py-2 text-sm font-medium text-joy-blue hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-joy-blue";
 
-export function CitedAnswer({ contextToken }: { contextToken: string }) {
+type CitedAnswerProps =
+  | { contextToken: string; samplePlayback?: never }
+  | { contextToken?: never; samplePlayback: (options: Parameters<typeof streamCitedAnswer>[1]) => Promise<void> };
+
+export function CitedAnswer({ contextToken, samplePlayback }: CitedAnswerProps) {
   const [answer, setAnswer] = useState<AnswerState>({ status: "idle" });
   const requestRef = useRef<AbortController | null>(null);
 
@@ -29,7 +33,7 @@ export function CitedAnswer({ contextToken }: { contextToken: string }) {
     setAnswer({ status: "loading" });
     const timeout = window.setTimeout(() => request.abort(new DOMException("Answer timed out", "TimeoutError")), 20_000);
     try {
-      await streamCitedAnswer(contextToken, {
+      const options: Parameters<typeof streamCitedAnswer>[1] = {
         signal: request.signal,
         onEvent(event) {
           if (requestRef.current !== request) return;
@@ -39,7 +43,9 @@ export function CitedAnswer({ contextToken }: { contextToken: string }) {
           if (event.type === "done") setAnswer((previous) => previous.status === "streaming"
             ? { ...previous, status: "complete", kind: event.kind, message: event.message } : previous);
         },
-      });
+      };
+      if (samplePlayback) await samplePlayback(options);
+      else await streamCitedAnswer(contextToken, options);
     } catch (error) {
       if (requestRef.current === request) {
         setAnswer({
@@ -75,16 +81,16 @@ export function CitedAnswer({ contextToken }: { contextToken: string }) {
   return (
     <section aria-labelledby="answer-heading" className="my-4 w-full min-w-0 rounded-2xl border border-blue-100 bg-blue-50/30 p-4 md:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="answer-heading" className="text-base font-medium text-gray-900">Cited answer</h2>
+        <h2 id="answer-heading" className="text-base font-medium text-gray-900">{samplePlayback ? "Sample answer" : "Cited answer"}</h2>
         {generating ? (
           <button type="button" onClick={stop} className={buttonClass}>Stop answer</button>
         ) : answer.status !== "complete" ? (
           <button type="button" onClick={generate} className={buttonClass}>
-            {answer.status === "idle" ? "Generate cited answer" : "Try answer again"}
+            {samplePlayback ? (answer.status === "idle" ? "Play sample answer" : "Replay sample answer") : (answer.status === "idle" ? "Generate cited answer" : "Try answer again")}
           </button>
         ) : null}
       </div>
-      {answer.status === "idle" ? <p className="mt-2 text-sm text-search-muted">An optional answer based on these search sources.</p> : null}
+      {answer.status === "idle" ? <p className="mt-2 text-sm text-search-muted">{samplePlayback ? "Play an authored example using the sample sources below." : "An optional answer based on these search sources."}</p> : null}
       <p role="status" aria-live="polite" aria-atomic="true" className="mt-2 text-sm text-search-muted">{status}</p>
       {answer.status === "error" ? <p role="alert" className="mt-2 text-sm text-joy-red">{answer.message}</p> : null}
       {display?.claims.length ? (
@@ -121,7 +127,7 @@ export function CitedAnswer({ contextToken }: { contextToken: string }) {
           </ol>
         </details>
       ) : null}
-      {display ? <p className="mt-3 text-xs text-search-muted">AI-generated. Citations identify sources; check them for accuracy.</p> : null}
+      {display ? <p className="mt-3 text-xs text-search-muted">{samplePlayback ? "Authored sample answer with fictional sources. No AI request was made." : "AI-generated. Citations identify sources; check them for accuracy."}</p> : null}
     </section>
   );
 }
