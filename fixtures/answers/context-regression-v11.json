@@ -1,0 +1,269 @@
+{
+  "version": "owned-context-regression-v11",
+  "authoredOn": "2026-11-14",
+  "ownership": "All queries and source passages in this fixture were authored for JoySearch. Organizations, products, facts, identifiers, and policies are fictional. URLs are identifiers under example.com, not fetched pages.",
+  "purpose": "Six already exposed cases copied unchanged before v11 dispatch to test stated denominators, no invented scope, updated versus effective dates, replacement history and arithmetic. This is targeted regression, not fresh confirmation.",
+  "cases": [
+    {
+      "id": "ANS01",
+      "split": "development",
+      "category": "factual",
+      "query": "How many collaborators does the Rill Notes Personal plan allow, and does the owner count?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Rill Notes Personal plan",
+          "url": "https://example.com/joysearch-fixtures/rill/personal",
+          "excerpt": "The fictional Rill Notes Personal plan supports a maximum of four collaborators per notebook. The notebook owner is included in this four-person limit. Read-only visitors do not count as collaborators."
+        },
+        {
+          "id": "S2",
+          "title": "Rill Notes Team plan",
+          "url": "https://example.com/joysearch-fixtures/rill/team",
+          "excerpt": "The fictional Rill Notes Team plan supports twenty collaborators per notebook. These Team plan limits do not apply to the Personal plan."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "limit",
+            "description": "The Personal plan permits four collaborators per notebook.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "owner",
+            "description": "The owner counts toward the four-person limit.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The Personal plan permits twenty collaborators.",
+          "Four collaborators are allowed in addition to the owner."
+        ]
+      }
+    },
+    {
+      "id": "ANS02",
+      "split": "development",
+      "category": "comparison",
+      "query": "Compare offline editing and export formats in the fictional Lumen Basic and Lumen Plus plans.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Lumen Basic",
+          "url": "https://example.com/joysearch-fixtures/lumen/basic",
+          "excerpt": "Lumen Basic supports editing only while online. It exports documents as Markdown. It does not export PDF files."
+        },
+        {
+          "id": "S2",
+          "title": "Lumen Plus",
+          "url": "https://example.com/joysearch-fixtures/lumen/plus",
+          "excerpt": "Lumen Plus supports both online and offline editing. It exports documents as Markdown and PDF. Offline edits synchronize when the application reconnects."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "offline",
+            "description": "Only Plus supports offline editing; Basic requires an online connection.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          },
+          {
+            "id": "export",
+            "description": "Both export Markdown; only Plus exports PDF.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Basic supports offline editing.",
+          "Basic exports PDF.",
+          "Either plan supports Word export."
+        ]
+      }
+    },
+    {
+      "id": "ANS03",
+      "split": "holdout",
+      "category": "conflicting_evidence",
+      "query": "How long does the fictional Marlow archive retain deleted files? Explain any conflict in the supplied sources.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Marlow help center",
+          "url": "https://example.com/joysearch-fixtures/marlow/help",
+          "excerpt": "Marlow help center, updated 10 November 2026: deleted files remain recoverable for fourteen days. This page gives no explanation of a migration or exception."
+        },
+        {
+          "id": "S2",
+          "title": "Marlow policy sheet",
+          "url": "https://example.com/joysearch-fixtures/marlow/policy",
+          "excerpt": "Marlow policy sheet, updated 10 November 2026: deleted files remain recoverable for thirty days. The sheet does not identify a plan-specific retention period."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "conflict",
+            "description": "Explicitly state that the sources conflict: the help center says fourteen days and the policy sheet says thirty days.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          },
+          {
+            "id": "uncertainty",
+            "description": "Do not select one retention period as definitive; the evidence does not resolve the conflict.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Fourteen days is definitively the current retention period.",
+          "Thirty days is definitively the current retention period.",
+          "The difference is explained by subscription plans or an announced migration."
+        ]
+      }
+    },
+    {
+      "id": "ANS04",
+      "split": "holdout",
+      "category": "freshness",
+      "query": "As of 14 November 2026, what is the upload limit for the fictional Orchard API?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Orchard API launch notes",
+          "url": "https://example.com/joysearch-fixtures/orchard/launch",
+          "excerpt": "Orchard API launch notes dated 2 August 2026: each upload may contain at most 10 MB."
+        },
+        {
+          "id": "S2",
+          "title": "Orchard upload limit update",
+          "url": "https://example.com/joysearch-fixtures/orchard/update",
+          "excerpt": "Orchard API release note dated 1 November 2026: effective immediately, the maximum size of each upload is 25 MB. This replaces the previous 10 MB limit for all plans."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "current",
+            "description": "The limit as of the requested date is 25 MB per upload.",
+            "sourceIds": [
+              "S2"
+            ]
+          },
+          {
+            "id": "superseded",
+            "description": "Identify the 10 MB limit as superseded by the 1 November release note.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The current limit is 10 MB.",
+          "The 25 MB limit applies only to paid plans."
+        ]
+      }
+    },
+    {
+      "id": "ANS05",
+      "split": "holdout",
+      "category": "bounded_calculation",
+      "query": "In the fictional Alder job queue, how long is the wait between the first failed attempt and the third attempt, ignoring execution time?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Alder retry schedule",
+          "url": "https://example.com/joysearch-fixtures/alder/retries",
+          "excerpt": "Alder queue retry schedule: after the first failed attempt, wait 2 seconds before attempt two. If attempt two fails, wait a further 4 seconds before attempt three. These delays exclude job execution time."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "total",
+            "description": "The accumulated waiting time is six seconds.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "calculation",
+            "description": "Show that the total is the two-second delay plus the four-second delay, excluding execution time.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The accumulated waiting time is four seconds.",
+          "The six seconds includes job execution time."
+        ]
+      }
+    },
+    {
+      "id": "ANS27",
+      "split": "holdout",
+      "category": "context_superseded_date",
+      "query": "As of 14 November 2026, what is the fictional Juniper API's daily job quota, and what earlier quota did the update replace?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Juniper launch quota",
+          "url": "https://example.com/joysearch-fixtures/juniper/launch",
+          "excerpt": "Juniper API launch notice dated 4 May 2026: each account can submit 70 jobs per day."
+        },
+        {
+          "id": "S2",
+          "title": "Juniper quota revision",
+          "url": "https://example.com/joysearch-fixtures/juniper/quota-update",
+          "excerpt": "Juniper API update dated 6 November 2026: effective that day, all accounts can submit 120 jobs per day. This replaces the previous 70-job daily quota."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "current",
+            "description": "State the current quota as 120 jobs per account per day on the requested date.",
+            "sourceIds": [
+              "S2"
+            ]
+          },
+          {
+            "id": "superseded",
+            "description": "State that the update replaced the earlier 70-job daily quota.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The current quota is 70 jobs per day.",
+          "The new quota is per hour.",
+          "The higher quota applies only to a paid plan."
+        ]
+      }
+    }
+  ]
+}

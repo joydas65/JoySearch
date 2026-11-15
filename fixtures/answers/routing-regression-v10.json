@@ -1,0 +1,159 @@
+{
+  "version": "owned-routing-regression-v10",
+  "authoredOn": "2026-11-14",
+  "ownership": "All queries and source passages in this fixture were authored for JoySearch. Organizations, products, facts, identifiers, and policies are fictional. URLs are identifiers under example.com, not fetched pages.",
+  "purpose": "Four previously exposed cases copied unchanged from corpus.json before v10 dispatch: conflict with actual values, navigation, ambiguity, and unavailable requested facts. This is targeted regression, not fresh confirmation.",
+  "cases": [
+    {
+      "id": "ANS03",
+      "split": "holdout",
+      "category": "conflicting_evidence",
+      "query": "How long does the fictional Marlow archive retain deleted files? Explain any conflict in the supplied sources.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Marlow help center",
+          "url": "https://example.com/joysearch-fixtures/marlow/help",
+          "excerpt": "Marlow help center, updated 10 November 2026: deleted files remain recoverable for fourteen days. This page gives no explanation of a migration or exception."
+        },
+        {
+          "id": "S2",
+          "title": "Marlow policy sheet",
+          "url": "https://example.com/joysearch-fixtures/marlow/policy",
+          "excerpt": "Marlow policy sheet, updated 10 November 2026: deleted files remain recoverable for thirty days. The sheet does not identify a plan-specific retention period."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "conflict",
+            "description": "Explicitly state that the sources conflict: the help center says fourteen days and the policy sheet says thirty days.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          },
+          {
+            "id": "uncertainty",
+            "description": "Do not select one retention period as definitive; the evidence does not resolve the conflict.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Fourteen days is definitively the current retention period.",
+          "Thirty days is definitively the current retention period.",
+          "The difference is explained by subscription plans or an announced migration."
+        ]
+      }
+    },
+    {
+      "id": "ANS09",
+      "split": "holdout",
+      "category": "navigation",
+      "query": "Which supplied page should I open to reset a fictional Rill Notes password?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Rill Notes password reset",
+          "url": "https://example.com/joysearch-fixtures/rill/password-reset",
+          "excerpt": "This fictional Rill Notes support page explains resetting a forgotten password through the password-reset email flow."
+        },
+        {
+          "id": "S2",
+          "title": "Rill Notes billing help",
+          "url": "https://example.com/joysearch-fixtures/rill/billing",
+          "excerpt": "This fictional Rill Notes support page covers invoices, subscription cancellations, and billing addresses. It does not cover password resets."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Direct the user to the password-reset page using source S1, not the billing page.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Use the billing page to reset the password.",
+          "A password has already been reset."
+        ]
+      }
+    },
+    {
+      "id": "ANS10",
+      "split": "development",
+      "category": "ambiguity",
+      "query": "What is Mercury's limit?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Mercury message API",
+          "url": "https://example.com/joysearch-fixtures/mercury/messages",
+          "excerpt": "The fictional Mercury message API accepts up to 40 messages per minute."
+        },
+        {
+          "id": "S2",
+          "title": "Mercury storage service",
+          "url": "https://example.com/joysearch-fixtures/mercury/storage",
+          "excerpt": "The unrelated fictional Mercury storage service allows 12 GB per workspace."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "disambiguation",
+            "description": "Ask which Mercury product or type of limit the user means before choosing a limit.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "Mercury has one unambiguous universal limit.",
+          "The user definitely means messages or storage."
+        ]
+      }
+    },
+    {
+      "id": "ANS11",
+      "split": "holdout",
+      "category": "insufficient_evidence",
+      "query": "How many paying customers did the fictional Northstar Notebook have on 31 October 2026?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Northstar Notebook company note",
+          "url": "https://example.com/joysearch-fixtures/northstar/company",
+          "excerpt": "Northstar Notebook launched in September 2026. The company note does not publish user counts, revenue, or paying-customer counts."
+        },
+        {
+          "id": "S2",
+          "title": "Northstar Notebook feature release",
+          "url": "https://example.com/joysearch-fixtures/northstar/release",
+          "excerpt": "On 31 October 2026, Northstar Notebook added keyboard shortcuts and document export. This release note contains no customer metrics."
+        }
+      ],
+      "expected": {
+        "kind": "insufficient",
+        "facets": [
+          {
+            "id": "abstention",
+            "description": "State that the supplied evidence does not establish a paying-customer count for the date.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "The count was zero.",
+          "Any invented positive paying-customer count.",
+          "The absence of published metrics proves there were no customers."
+        ]
+      }
+    }
+  ]
+}

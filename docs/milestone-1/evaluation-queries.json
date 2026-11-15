@@ -1,0 +1,917 @@
+{
+  "version": "1.0",
+  "createdOn": "2026-11-11",
+  "purpose": "Compare Exa and Brave retrieval, then compare grounded response behavior under a shared answer pipeline for JoySearch's low-budget portfolio evaluation.",
+  "notes": [
+    "This corpus defines original evaluation prompts and relevance criteria; it is not a set of verified factual answers.",
+    "Freeze the holdout queries and criteria before provider tuning. Use only development queries to adjust shared settings or prompts; record any later corpus changes as a new version.",
+    "Use identical query text for both providers. Country and language express the intended audience, but provider differences in supported controls must be documented in the run manifest.",
+    "Resolve current and latest against the evaluation execution date recorded in the manifest, not createdOn. Record the date range used for recent queries before running either provider.",
+    "Judge publication dates separately from fetch or crawl dates. Current opening hours and release information require source checking at evaluation time.",
+    "The 12 answerSample entries are holdout cases selected for a small shared-model comparison. Navigation, clarification, and insufficient-evidence responses are intentional expected outcomes, not generation failures.",
+    "Score whether a cited source supports the associated claim; evidenceCriteria guide human review and do not prescribe a fixed URL ranking or an unverified factual answer.",
+    "Retain or publish provider outputs only as permitted by the applicable provider terms. This file contains prompts and evaluation criteria only."
+  ],
+  "queries": [
+    {
+      "id": "NAV01",
+      "category": "navigation",
+      "split": "development",
+      "query": "GitHub Actions documentation",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Rank the official GitHub Actions documentation above third-party tutorials.",
+        "Return a directly usable documentation URL rather than a general GitHub homepage."
+      ]
+    },
+    {
+      "id": "NAV02",
+      "category": "navigation",
+      "split": "development",
+      "query": "ISRO official website",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Find the official Indian Space Research Organisation website.",
+        "Distinguish the organization's site from news coverage and similarly named sites."
+      ]
+    },
+    {
+      "id": "NAV03",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "Next.js App Router documentation",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": true,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Find the official App Router documentation.",
+        "Keep Pages Router material distinguishable from the requested documentation."
+      ]
+    },
+    {
+      "id": "NAV04",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "Indian Railways National Train Enquiry System official website",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": true,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Find an official train enquiry service matching the named system.",
+        "Do not substitute a booking advertisement or unofficial tracking service."
+      ]
+    },
+    {
+      "id": "NAV05",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "PostgreSQL EXPLAIN documentation",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Return the official PostgreSQL documentation for EXPLAIN.",
+        "Expose the documented version when the destination is version-specific."
+      ]
+    },
+    {
+      "id": "NAV06",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "MDN AbortController documentation",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Return the requested MDN API reference directly.",
+        "Distinguish AbortController from unrelated cancellation libraries."
+      ]
+    },
+    {
+      "id": "NAV07",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "DigiLocker official website",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Find the official DigiLocker service.",
+        "Avoid misleading login pages or unofficial service providers."
+      ]
+    },
+    {
+      "id": "NAV08",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "OpenTelemetry JavaScript documentation",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Return official OpenTelemetry documentation relevant to JavaScript.",
+        "Distinguish general project marketing from setup and reference material."
+      ]
+    },
+    {
+      "id": "NAV09",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "National Digital Library of India official website",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Identify the official service matching the full institution name.",
+        "Avoid treating similarly named libraries as interchangeable."
+      ]
+    },
+    {
+      "id": "NAV10",
+      "category": "navigation",
+      "split": "holdout",
+      "query": "W3C Web Content Accessibility Guidelines 2.2",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "navigate",
+      "evidenceCriteria": [
+        "Return the official W3C WCAG 2.2 standard or its official overview.",
+        "Distinguish the requested version from older accessibility guidance."
+      ]
+    },
+    {
+      "id": "FACT01",
+      "category": "factual",
+      "split": "development",
+      "query": "What does HTTP status 429 mean, and how can a server tell a client when to retry?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use an authoritative HTTP specification or reference.",
+        "Support both the status meaning and any retry guidance with evidence."
+      ]
+    },
+    {
+      "id": "FACT02",
+      "category": "factual",
+      "split": "development",
+      "query": "Why do leap years exist in the Gregorian calendar?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Explain the calendar adjustment using a reliable reference.",
+        "Distinguish the general purpose from the complete leap-year rule."
+      ]
+    },
+    {
+      "id": "FACT03",
+      "category": "factual",
+      "split": "holdout",
+      "query": "What is the difference between a PostgreSQL primary key and a unique constraint when values are null?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer PostgreSQL documentation and identify any version-dependent behavior.",
+        "Support the null-handling distinction without generalizing all databases."
+      ]
+    },
+    {
+      "id": "FACT04",
+      "category": "factual",
+      "split": "holdout",
+      "query": "What is the difference between IST and UTC, and does India currently observe daylight saving time?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use an authoritative time-zone reference or Indian time authority.",
+        "Answer the offset and daylight-saving questions separately and avoid stale policy assumptions."
+      ]
+    },
+    {
+      "id": "FACT05",
+      "category": "factual",
+      "split": "holdout",
+      "query": "Why can a browser block a cross-origin request even when the server returns HTTP 200?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use authoritative browser or web-platform documentation.",
+        "Distinguish HTTP transport success from browser access-control enforcement."
+      ]
+    },
+    {
+      "id": "FACT06",
+      "category": "factual",
+      "split": "holdout",
+      "query": "What is the difference between HTTP ETag and Last-Modified cache validators?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use HTTP specifications or authoritative web-platform references.",
+        "Explain the validators' roles and limitations without equating them."
+      ]
+    },
+    {
+      "id": "FACT07",
+      "category": "factual",
+      "split": "holdout",
+      "query": "How does a solar eclipse differ from a lunar eclipse?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use a reputable scientific or educational source.",
+        "Explain the geometry of both events with supported descriptions."
+      ]
+    },
+    {
+      "id": "FACT08",
+      "category": "factual",
+      "split": "holdout",
+      "query": "What does an idempotent HTTP method mean?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use the HTTP specification or an authoritative reference.",
+        "Distinguish intended server effect from an identical response body or the absence of side effects."
+      ]
+    },
+    {
+      "id": "FACT09",
+      "category": "factual",
+      "split": "holdout",
+      "query": "Why do DNS records have a time to live value?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer DNS standards or authoritative operational documentation.",
+        "Explain cache duration without claiming that every resolver changes records instantly on expiry."
+      ]
+    },
+    {
+      "id": "FACT10",
+      "category": "factual",
+      "split": "holdout",
+      "query": "What is the difference between a research paper's publication date and the date a search engine last crawled it?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Find evidence that distinguishes publication metadata from retrieval or crawl metadata.",
+        "Avoid treating a recent crawl as proof that the underlying research is recent."
+      ]
+    },
+    {
+      "id": "DOC01",
+      "category": "technical_docs",
+      "split": "development",
+      "query": "How do I cancel a fetch request with AbortController according to current browser documentation?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer current browser or web-platform documentation.",
+        "Support the cancellation mechanism and any limitation on work already performed by the server."
+      ]
+    },
+    {
+      "id": "DOC02",
+      "category": "technical_docs",
+      "split": "development",
+      "query": "How does PostgreSQL document transaction isolation levels in its current stable release?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Identify the version of official PostgreSQL documentation consulted.",
+        "Explain the documented isolation behavior without silently using another database's semantics."
+      ]
+    },
+    {
+      "id": "DOC03",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "What are the current Next.js App Router caching defaults, and how can a route opt into fresh data?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer official Next.js documentation and identify the applicable release or version.",
+        "Separate distinct cache mechanisms and avoid mixing defaults from older releases."
+      ]
+    },
+    {
+      "id": "DOC04",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "How does the current Vercel AI SDK stream text and source information to a React interface?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer official AI SDK documentation for the current supported APIs.",
+        "Distinguish text streaming from source or structured-data events and cite the relevant contracts."
+      ]
+    },
+    {
+      "id": "DOC05",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "How do current OpenTelemetry JavaScript docs propagate trace context across HTTP requests?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use official JavaScript instrumentation or propagation documentation.",
+        "Distinguish browser and server context where the setup differs."
+      ]
+    },
+    {
+      "id": "DOC06",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "How does the current React documentation recommend handling effects that fetch data?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer the current official React documentation.",
+        "Support cleanup or race-condition guidance and preserve any framework-related qualifications."
+      ]
+    },
+    {
+      "id": "DOC07",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "What do current Playwright docs recommend for testing keyboard navigation and accessibility?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer official Playwright guidance and clearly identify any additional accessibility tooling.",
+        "Do not claim that automated checks establish complete accessibility compliance."
+      ]
+    },
+    {
+      "id": "DOC08",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "How does the current Node.js documentation describe AbortSignal.timeout?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use official Node.js API documentation and identify relevant version support.",
+        "Support the timeout behavior and distinguish it from a guarantee that remote work stops."
+      ]
+    },
+    {
+      "id": "DOC09",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "How does current PostgreSQL documentation explain INSERT ON CONFLICT under concurrent requests?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer official PostgreSQL reference or concurrency documentation.",
+        "Support the conflict-handling semantics and avoid promising end-to-end exactly-once external effects."
+      ]
+    },
+    {
+      "id": "DOC10",
+      "category": "technical_docs",
+      "split": "holdout",
+      "query": "How do current Tailwind CSS docs configure design tokens and theme variables?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use official documentation for the current Tailwind generation.",
+        "Avoid mixing configuration approaches from different major versions."
+      ]
+    },
+    {
+      "id": "CMP01",
+      "category": "comparison",
+      "split": "development",
+      "query": "For a small Next.js dashboard, when should data be fetched on the server versus in the browser?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Find sources addressing both approaches in the relevant framework.",
+        "Compare latency, data exposure, and interaction needs without declaring a universal winner."
+      ]
+    },
+    {
+      "id": "CMP02",
+      "category": "comparison",
+      "split": "development",
+      "query": "For a solo developer's application, when is SQLite sufficient and when is PostgreSQL more appropriate?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use authoritative documentation covering relevant concurrency and deployment differences.",
+        "State workload assumptions and compare tradeoffs rather than popularity."
+      ]
+    },
+    {
+      "id": "CMP03",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "For streaming an AI answer to a browser, when should I use server-sent events instead of WebSockets?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Find authoritative protocol or platform documentation for both transports.",
+        "Compare communication direction, reconnection, and deployment needs with explicit assumptions."
+      ]
+    },
+    {
+      "id": "CMP04",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "For a low-traffic research app, what are the tradeoffs between synchronous requests and background jobs?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use credible technical sources supporting the operational tradeoffs.",
+        "Address latency, retries, cancellation, and complexity without assuming large-scale traffic."
+      ]
+    },
+    {
+      "id": "CMP05",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "What are the tradeoffs between offset pagination and cursor pagination for a frequently updated dataset?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Find evidence for both pagination approaches.",
+        "Discuss consistency and performance with relevant indexing and ordering assumptions."
+      ]
+    },
+    {
+      "id": "CMP06",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "For search relevance, how do keyword retrieval and semantic retrieval differ?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use original research or authoritative technical documentation where available.",
+        "Explain strengths and failure cases without claiming one approach always yields better results."
+      ]
+    },
+    {
+      "id": "CMP07",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "What are the tradeoffs between caching a generated answer and caching its retrieved source passages?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Find evidence relevant to freshness, reuse, and generation cost.",
+        "Separate technical tradeoffs from provider-specific permission to retain or reuse content."
+      ]
+    },
+    {
+      "id": "CMP08",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "For a public API, how do token-bucket and fixed-window rate limiting differ?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Find credible algorithm descriptions for both approaches.",
+        "Compare burst behavior and implementation constraints using consistent assumptions."
+      ]
+    },
+    {
+      "id": "CMP09",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "When should a web application use optimistic UI instead of waiting for server confirmation?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Find authoritative framework guidance or well-supported engineering explanations.",
+        "Address reversibility, failure recovery, and user expectations."
+      ]
+    },
+    {
+      "id": "CMP10",
+      "category": "comparison",
+      "split": "holdout",
+      "query": "For short research answers, what are the tradeoffs between extracting passages and passing full pages to an LLM?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use research or authoritative technical sources discussing context selection.",
+        "Compare evidence coverage, noise, token use, and latency without inventing benchmark numbers."
+      ]
+    },
+    {
+      "id": "FRESH01",
+      "category": "fresh_local",
+      "split": "development",
+      "query": "What is the latest stable Node.js release according to the official release information?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use official release metadata current at the evaluation date.",
+        "Distinguish latest stable from LTS and prerelease channels."
+      ]
+    },
+    {
+      "id": "FRESH02",
+      "category": "fresh_local",
+      "split": "development",
+      "query": "What recent announcements has ISRO published?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "recent",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer the official announcement or press-release source.",
+        "Show publication dates and apply the recent window recorded in the evaluation manifest."
+      ]
+    },
+    {
+      "id": "FRESH03",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What is the latest stable Next.js release, and what changes does its official release note highlight?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Verify the release against official release information available at run time.",
+        "Distinguish a stable release from previews and attribute change claims to its release notes."
+      ]
+    },
+    {
+      "id": "FRESH04",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What are the current visitor opening hours and weekly closure day for the Indian Museum in Kolkata?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": true,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer the museum's official current visitor information.",
+        "Distinguish regular hours from temporary notices and report uncertainty when current information cannot be confirmed."
+      ]
+    },
+    {
+      "id": "FRESH05",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What security advisories has the Node.js project published recently?",
+      "country": "US",
+      "language": "en",
+      "freshness": "recent",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer official advisories within the manifest's recent window.",
+        "Show dates and affected-version scope without assuming every installation is affected."
+      ]
+    },
+    {
+      "id": "FRESH06",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What are the current library visiting hours for the National Library of India in Kolkata?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer official visitor or reading-room information.",
+        "Distinguish departments or reading rooms with different hours and preserve any access conditions."
+      ]
+    },
+    {
+      "id": "FRESH07",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What recent software release announcements appear on the official PostgreSQL website?",
+      "country": "US",
+      "language": "en",
+      "freshness": "recent",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use official dated release announcements.",
+        "Distinguish major releases, minor updates, and the configured recent period."
+      ]
+    },
+    {
+      "id": "FRESH08",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What are the current visiting hours for Visvesvaraya Industrial and Technological Museum in Bengaluru?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer the museum's official visitor page or a current official notice.",
+        "Preserve distinctions among general opening hours, ticketing cutoffs, and special closures."
+      ]
+    },
+    {
+      "id": "FRESH09",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What has the official React blog announced recently?",
+      "country": "US",
+      "language": "en",
+      "freshness": "recent",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Use dated posts from the official React blog.",
+        "Apply the manifest's recent window and report when it contains no relevant announcements."
+      ]
+    },
+    {
+      "id": "FRESH10",
+      "category": "fresh_local",
+      "split": "holdout",
+      "query": "What are the current visitor hours and weekly closure rules for the National Science Centre in Delhi?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "answer",
+      "evidenceCriteria": [
+        "Prefer official visitor information and applicable notices.",
+        "Avoid presenting undated third-party listings as confirmed current hours."
+      ]
+    },
+    {
+      "id": "EDGE01",
+      "category": "ambiguous_or_insufficient",
+      "split": "development",
+      "query": "Tell me about Java.",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "clarify",
+      "evidenceCriteria": [
+        "Recognize that the term can refer to multiple subjects.",
+        "Ask for the intended meaning or present clearly separated interpretations rather than silently choosing one."
+      ]
+    },
+    {
+      "id": "EDGE02",
+      "category": "ambiguous_or_insufficient",
+      "split": "development",
+      "query": "What exact score will my unpublished research app receive in next month's benchmark?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "insufficient_evidence",
+      "evidenceCriteria": [
+        "Recognize that the app, benchmark, and future result are unavailable.",
+        "State what information or measurement would be needed without inventing a score."
+      ]
+    },
+    {
+      "id": "EDGE03",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "Which database is best?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": true,
+      "expectedBehavior": "clarify",
+      "evidenceCriteria": [
+        "Identify missing workload, deployment, and operational constraints.",
+        "Ask a focused clarifying question or provide conditional criteria instead of an unconditional ranking."
+      ]
+    },
+    {
+      "id": "EDGE04",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "What is the current latency of my private API if I have not provided its URL or measurements?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": true,
+      "expectedBehavior": "insufficient_evidence",
+      "evidenceCriteria": [
+        "Recognize that public web results cannot establish this private system's latency.",
+        "Request relevant measurements or explain a measurement method without fabricating a number."
+      ]
+    },
+    {
+      "id": "EDGE05",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "How do I clear the cache?",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "clarify",
+      "evidenceCriteria": [
+        "Recognize the missing application, platform, and cache type.",
+        "Ask for context before presenting potentially irrelevant instructions as a direct answer."
+      ]
+    },
+    {
+      "id": "EDGE06",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "Find the official documentation for the imaginary database NebulaPickleDB version 99.9.",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "insufficient_evidence",
+      "evidenceCriteria": [
+        "Do not fabricate an official URL or product documentation.",
+        "Report whether trustworthy evidence exists and distinguish unrelated name matches."
+      ]
+    },
+    {
+      "id": "EDGE07",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "Will the next unreleased JavaScript standard definitely include my proposed feature?",
+      "country": "US",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "insufficient_evidence",
+      "evidenceCriteria": [
+        "Recognize that the feature and its proposal status have not been supplied.",
+        "Avoid guarantees about future standardization and request a specific proposal."
+      ]
+    },
+    {
+      "id": "EDGE08",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "What are the opening hours of the museum?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "run_date",
+      "answerSample": false,
+      "expectedBehavior": "clarify",
+      "evidenceCriteria": [
+        "Recognize that the museum and location are unspecified.",
+        "Request the institution or city rather than guessing from the country setting."
+      ]
+    },
+    {
+      "id": "EDGE09",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "Why is my application slow?",
+      "country": "IN",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "clarify",
+      "evidenceCriteria": [
+        "Identify missing symptoms, workload, environment, and measurements.",
+        "Offer targeted diagnostic questions without claiming to have observed the application's bottleneck."
+      ]
+    },
+    {
+      "id": "EDGE10",
+      "category": "ambiguous_or_insufficient",
+      "split": "holdout",
+      "query": "Give me a guaranteed exact monthly API bill for an app whose traffic and model usage are unknown.",
+      "country": "US",
+      "language": "en",
+      "freshness": "any",
+      "answerSample": false,
+      "expectedBehavior": "insufficient_evidence",
+      "evidenceCriteria": [
+        "Recognize that missing usage and pricing inputs prevent an exact bill.",
+        "Provide conditional cost inputs or a formula while avoiding a fabricated guarantee."
+      ]
+    }
+  ]
+}

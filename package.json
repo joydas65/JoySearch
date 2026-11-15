@@ -12,10 +12,14 @@
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --test tests/*.test.ts"
+    "test": "node --test tests/*.test.ts",
+    "evaluate:search": "node --env-file-if-exists=.env.local scripts/evaluate-search.ts",
+    "evaluate:answers": "node --env-file-if-exists=.env.local scripts/evaluate-answers.ts"
   },
   "dependencies": {
     "@fontsource/roboto": "5.3.0",
+    "@neondatabase/serverless": "1.0.2",
+    "ai": "^7.0.171",
     "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1"

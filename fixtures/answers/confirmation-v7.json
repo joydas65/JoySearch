@@ -1,0 +1,469 @@
+{
+  "version": "owned-confirmation-v7",
+  "authoredOn": "2026-11-14",
+  "ownership": "All queries and passages were authored for JoySearch. Products, organizations, values, and policies are fictional. URLs under example.com identify supplied evidence and are not fetched.",
+  "purpose": "Fresh confirmation after the earlier confirmation set became exposed regression material. Tests ambiguity, navigation, complete material context, and controls against unnecessary clarification. Not a search relevance or general accuracy benchmark.",
+  "cases": [
+    {
+      "id": "ANS41",
+      "split": "holdout",
+      "category": "ambiguity_entity",
+      "query": "When will my Iris invitation expire?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Iris meeting invitations",
+          "url": "https://example.com/joysearch-fixtures/iris/meetings",
+          "excerpt": "The fictional Iris meeting scheduler expires an unused meeting invitation after 36 hours. It is unrelated to the Iris diagram application."
+        },
+        {
+          "id": "S2",
+          "title": "Iris diagram invitations",
+          "url": "https://example.com/joysearch-fixtures/iris/diagrams",
+          "excerpt": "The fictional Iris diagram application expires an unused workspace invitation after nine days. It is unrelated to the Iris meeting scheduler."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "entity",
+            "description": "Ask whether the invitation belongs to the meeting scheduler or diagram application before giving an expiration duration.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "The invitation definitely belongs to the meeting scheduler.",
+          "The invitation definitely belongs to the diagram application.",
+          "Every Iris invitation expires after the same duration."
+        ]
+      }
+    },
+    {
+      "id": "ANS42",
+      "split": "holdout",
+      "category": "ambiguity_type",
+      "query": "How can I remove a lock in Mica?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Mica document editing locks",
+          "url": "https://example.com/joysearch-fixtures/mica/edit-lock",
+          "excerpt": "In the fictional Mica editor, a document editing lock is removed by its holder using Release editing lock in the document menu."
+        },
+        {
+          "id": "S2",
+          "title": "Mica account security locks",
+          "url": "https://example.com/joysearch-fixtures/mica/security-lock",
+          "excerpt": "In the fictional Mica editor, an account security lock is separate from a document editing lock. A workspace administrator can remove an account security lock through the Security console. Releasing an editing lock does not remove an account security lock."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "lock_type",
+            "description": "Ask whether the user means a document editing lock or an account security lock before giving a removal procedure.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "The document menu removes every kind of lock.",
+          "Any lock holder can remove an account security lock.",
+          "The user already identified the lock type."
+        ]
+      }
+    },
+    {
+      "id": "ANS43",
+      "split": "holdout",
+      "category": "ambiguity_measure",
+      "query": "What is the quota for my Fern account?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Fern daily report quota",
+          "url": "https://example.com/joysearch-fixtures/fern/reports",
+          "excerpt": "A fictional Fern account may generate at most 24 reports per calendar day."
+        },
+        {
+          "id": "S2",
+          "title": "Fern account storage quota",
+          "url": "https://example.com/joysearch-fixtures/fern/storage",
+          "excerpt": "A fictional Fern account may store up to 7 GB of files. This storage capacity is separate from the daily report-generation quota."
+        }
+      ],
+      "expected": {
+        "kind": "clarify",
+        "facets": [
+          {
+            "id": "quota_type",
+            "description": "Ask whether the user wants the daily report quota or file-storage capacity before supplying a numerical quota.",
+            "sourceIds": []
+          }
+        ],
+        "forbiddenClaims": [
+          "There is only one quota for every kind of Fern usage.",
+          "The user explicitly requested report generation.",
+          "The user explicitly requested file-storage capacity."
+        ]
+      }
+    },
+    {
+      "id": "ANS44",
+      "split": "holdout",
+      "category": "navigation_pointer",
+      "query": "Point me at the fictional Aster guide for using account recovery codes.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Aster account recovery codes",
+          "url": "https://example.com/joysearch-fixtures/aster/recovery",
+          "excerpt": "This fictional Aster help guide explains how to use saved account recovery codes when the usual second factor is unavailable."
+        },
+        {
+          "id": "S2",
+          "title": "Aster notification preferences",
+          "url": "https://example.com/joysearch-fixtures/aster/notifications",
+          "excerpt": "This fictional Aster help page explains email and push-notification preferences. It does not explain account recovery codes."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Direct the user to the recovery-code guide using S1.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The notification-preferences page is the recovery-code guide.",
+          "An account has already been recovered."
+        ]
+      }
+    },
+    {
+      "id": "ANS45",
+      "split": "holdout",
+      "category": "navigation_find_reference",
+      "query": "I am trying to find the fictional Linden webhook configuration documentation.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Linden CSV import help",
+          "url": "https://example.com/joysearch-fixtures/linden/csv",
+          "excerpt": "This fictional Linden help page documents CSV imports and column mapping. It does not document webhook configuration."
+        },
+        {
+          "id": "S2",
+          "title": "Linden webhook setup reference",
+          "url": "https://example.com/joysearch-fixtures/linden/webhooks",
+          "excerpt": "This fictional Linden documentation reference explains configuring webhook endpoints, event subscriptions, and delivery verification."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Select the supplied webhook configuration reference using S2.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "CSV import help contains the webhook configuration reference.",
+          "A webhook endpoint was configured for the user."
+        ]
+      }
+    },
+    {
+      "id": "ANS46",
+      "split": "holdout",
+      "category": "navigation_changelog",
+      "query": "Send me to the official changelog for the fictional Opal desktop app.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Opal community discussions",
+          "url": "https://example.com/joysearch-fixtures/opal/community",
+          "excerpt": "This fictional Opal community page contains user discussions and feature suggestions. It is not the official release changelog."
+        },
+        {
+          "id": "S2",
+          "title": "Opal official desktop changelog",
+          "url": "https://example.com/joysearch-fixtures/opal/changelog",
+          "excerpt": "This is the fictional Opal project's official desktop-app changelog, listing release versions, dates, and changes."
+        }
+      ],
+      "expected": {
+        "kind": "navigation",
+        "facets": [
+          {
+            "id": "destination",
+            "description": "Select the official desktop changelog using S2 rather than the community discussions page.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The community-discussions page is the official changelog.",
+          "A new version has been installed."
+        ]
+      }
+    },
+    {
+      "id": "ANS47",
+      "split": "holdout",
+      "category": "context_per_entity_time_unit",
+      "query": "How many scans can a fictional Acorn team run in a rolling hour, and is that allowance per team or per user?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Acorn scan allowance",
+          "url": "https://example.com/joysearch-fixtures/acorn/scans",
+          "excerpt": "The fictional Acorn service allows 42 scans per team in any rolling one-hour window. Every member shares the team's allowance; it is not a separate allowance for each user. The window is rolling, not a calendar-day quota."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "amount_window",
+            "description": "State 42 scans within a rolling one-hour window.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "entity_scope",
+            "description": "State that the allowance is shared per team, not separately granted to every user.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Each user can run 42 scans per hour.",
+          "The allowance is 42 scans per day.",
+          "Each clock hour starts a completely new allowance regardless of previous scans."
+        ]
+      }
+    },
+    {
+      "id": "ANS48",
+      "split": "holdout",
+      "category": "context_multiple_limits",
+      "query": "On the fictional Clover Starter plan, what is the maximum size of one attachment and the total storage allowance for each project?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Clover Starter limits",
+          "url": "https://example.com/joysearch-fixtures/clover/starter",
+          "excerpt": "The fictional Clover Starter plan allows at most 32 MB for one attachment. Total stored content is limited to 6 GB per project. The 6 GB quota is shared by all attachments in that project, not available separately to each attachment."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "attachment",
+            "description": "State a maximum of 32 MB per individual attachment.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "project",
+            "description": "State total shared storage of 6 GB per project, distinct from the attachment limit.",
+            "sourceIds": [
+              "S1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "Each attachment can be 6 GB.",
+          "Total storage is 32 MB per project.",
+          "The 6 GB allowance is per user rather than per project."
+        ]
+      }
+    },
+    {
+      "id": "ANS49",
+      "split": "holdout",
+      "category": "context_revision_date",
+      "query": "As of 14 November 2026, how many saved revisions does fictional Moss Docs keep per document, and what older limit did it replace on which date?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Moss Docs original revision limit",
+          "url": "https://example.com/joysearch-fixtures/moss/original",
+          "excerpt": "Moss Docs notice dated 3 June 2026: the fictional editor retains the five most recent saved revisions per document."
+        },
+        {
+          "id": "S2",
+          "title": "Moss Docs revision-limit update",
+          "url": "https://example.com/joysearch-fixtures/moss/update",
+          "excerpt": "Moss Docs update dated 11 November 2026: effective that day, the fictional editor retains the twelve most recent saved revisions per document. This replaces the previous limit of five revisions per document for every plan."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "current",
+            "description": "State the current limit is twelve saved revisions per document on the requested date.",
+            "sourceIds": [
+              "S2"
+            ]
+          },
+          {
+            "id": "previous_date",
+            "description": "State that the previous five-revision limit was replaced effective 11 November 2026.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The current limit is five revisions per document.",
+          "The twelve revisions are shared across a workspace.",
+          "Only one paid plan received the new limit."
+        ]
+      }
+    },
+    {
+      "id": "ANS50",
+      "split": "holdout",
+      "category": "control_explicit_comparison",
+      "query": "Please compare both fictional Ember products: how long does an Ember chat invitation last, and how long does an Ember canvas invitation last?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Ember chat invitations",
+          "url": "https://example.com/joysearch-fixtures/ember/chat",
+          "excerpt": "The fictional Ember chat product expires an unused invitation after 20 hours. It is unrelated to Ember canvas."
+        },
+        {
+          "id": "S2",
+          "title": "Ember canvas invitations",
+          "url": "https://example.com/joysearch-fixtures/ember/canvas",
+          "excerpt": "The fictional Ember canvas product expires an unused invitation after four days. It is unrelated to Ember chat."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "chat",
+            "description": "Give the chat invitation duration of 20 hours.",
+            "sourceIds": [
+              "S1"
+            ]
+          },
+          {
+            "id": "canvas",
+            "description": "Give the canvas invitation duration of four days.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The user must pick just one product before this explicit comparison can be answered.",
+          "Both products have identical invitation durations."
+        ]
+      }
+    },
+    {
+      "id": "ANS51",
+      "split": "holdout",
+      "category": "control_explicit_disambiguation",
+      "query": "I mean the backup-storage service called Lark, not its namesake chat tool. How much storage does one backup project receive?",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Lark chat history",
+          "url": "https://example.com/joysearch-fixtures/lark/chat",
+          "excerpt": "The fictional Lark chat tool stores up to 15,000 messages in each room. It is unrelated to the Lark backup-storage service."
+        },
+        {
+          "id": "S2",
+          "title": "Lark backup-project storage",
+          "url": "https://example.com/joysearch-fixtures/lark/backups",
+          "excerpt": "The fictional Lark backup-storage service provides 13 GB of storage per backup project. This per-project capacity does not refer to the unrelated Lark chat tool."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "capacity",
+            "description": "Give 13 GB per backup project for the explicitly identified backup-storage service.",
+            "sourceIds": [
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The user has not specified which Lark service they mean.",
+          "A backup project receives capacity measured in 15,000 messages.",
+          "The 13 GB limit is per room."
+        ]
+      }
+    },
+    {
+      "id": "ANS52",
+      "split": "holdout",
+      "category": "control_same_entity_conflict",
+      "query": "For fictional Willow Queue, the two supplied retry-policy pages give different delays. Report each delay and whether these excerpts resolve which one applies.",
+      "sources": [
+        {
+          "id": "S1",
+          "title": "Willow Queue operator policy",
+          "url": "https://example.com/joysearch-fixtures/willow/operator",
+          "excerpt": "Willow Queue operator policy, updated 13 November 2026: retry a failed delivery after 13 seconds. This page does not identify an exception or a replacement policy."
+        },
+        {
+          "id": "S2",
+          "title": "Willow Queue API policy",
+          "url": "https://example.com/joysearch-fixtures/willow/api",
+          "excerpt": "Willow Queue API policy, updated 13 November 2026: retry a failed delivery after 26 seconds. This page does not explain the different delay stated in the operator policy."
+        }
+      ],
+      "expected": {
+        "kind": "answer",
+        "facets": [
+          {
+            "id": "delays",
+            "description": "Attribute 13 seconds to the operator policy and 26 seconds to the API policy.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          },
+          {
+            "id": "unresolved",
+            "description": "Explicitly say these conflicting excerpts do not resolve which single delay applies.",
+            "sourceIds": [
+              "S1",
+              "S2"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          "The correct delay is definitively 13 seconds.",
+          "The correct delay is definitively 26 seconds.",
+          "The difference is explained by separate subscription tiers or a documented migration.",
+          "The user needs to identify a different product before this same-product conflict can be described."
+        ]
+      }
+    }
+  ]
+}
