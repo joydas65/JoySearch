@@ -1,6 +1,8 @@
 # JoySearch design brief
 
-Date: 11 November 2026. Owner: Joy Das. Status: proposed design; provider evaluation pending.
+Date: 11 November 2026. Owner: Joy Das. Original design, with delivery sequence updated 15 November 2026.
+
+**Current scope:** search, cited answers, and durable spending controls are deployed. Milestone 3 adds a credential-free sample experience and automated release checks with zero paid API calls. Persistent research is deferred. The original recurring-budget estimates below are historical proposals, not authorized spending; the current permanent allocation and remaining authorization are documented in the [deployment runbook](../deployment.md).
 
 JoySearch will help a visitor find useful web pages, obtain a supported answer, and investigate a question more deeply. The portfolio objective is to demonstrate senior full-stack execution and staff-level judgment through explicit scope, measurable tradeoffs, failure handling, and decisions another engineer can review.
 
@@ -69,8 +71,8 @@ A performance miss leads to a recorded tradeoff and a revised implementation or 
 
 1. **Milestone 1 — design and evaluation preparation.** Deliver this brief, architecture, frozen query corpus, scoring rules, and budget. Leave measured results and provider selection pending until the eligible comparison is executed.
 2. **Milestone 2 — search and answers.** Implement server routes, one selected provider, evidence-linked streaming, shared usage accounting, and meaningful integration tests. Deploy the complete flow with automated checks.
-3. **Milestone 3 — persistent research.** Add job execution, state transitions, private run viewing, cancellation, recovery, and permitted retention. Demonstrate a partial result and a recovered run.
-4. **Milestone 4 — measurement and presentation.** Evaluate the deployed flow, address significant failures, and publish permitted aggregate results, a demo, and the engineering case study.
+3. **Milestone 3 — sample mode and release checks.** Demonstrate owned examples without credentials or provider requests. Automate lint, types, existing regression checks, a production build, and focused browser failure-path checks. Preserve live API and accounting boundaries. See the [milestone contract](../milestone-3/release-checks.md).
+4. **Presentation follow-up.** Use the existing evaluation and release evidence for a concise engineering case study and two-minute walkthrough. Persistent research remains deferred until a concrete portfolio need justifies its implementation, retention decisions, and separate budget.
 
 ## Decisions still required
 

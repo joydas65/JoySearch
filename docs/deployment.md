@@ -1,8 +1,16 @@
 # JoySearch deployment and spending controls
 
-Prepared 14 November 2026; release verified 15 November 2026 (IST). **The public search-and-answer smoke passed.** Hosted controls use a separate Neon database on the existing Free plan. [Pull request #2](https://github.com/joydas65/JoySearch/pull/2) publishes the reviewed source and remains open, unmerged. Published release commit `4624fc3` exactly matches the deployed source tree; the provenance and later documentation-only update are recorded below.
+Prepared 14 November 2026; release verified 15 November 2026 (IST). **The public search-and-answer smoke passed.** Hosted controls use a separate Neon database on the existing Free plan. [Pull request #2](https://github.com/joydas65/JoySearch/pull/2) was merged as `952ab19bb9d52daca48e804c76ae063a979f257e` and deployed. The initial paid smoke and subsequent zero-paid-call merge verification are recorded separately below.
 
-## Release record
+## Merged release verification — 15 November 2026
+
+- PR #2 merged as `952ab19bb9d52daca48e804c76ae063a979f257e`, source tree `71ed3fc7336b24840c344448af435690da621ab5`.
+- Production deployment `dpl_6ezkQsTn7eJQ3GNGiAUQ21GUExst` was staged, verified, and promoted to [joysearch.vercel.app](https://joysearch.vercel.app). Its immutable URL is [joysearch-bj0w1e4zl-joydas0111-7078s-projects.vercel.app](https://joysearch-bj0w1e4zl-joydas0111-7078s-projects.vercel.app); Vercel protection applies there.
+- All 91 uploaded file hashes matched the clean merged-commit checkout's upload manifest, with no extra files. CLI commit-SHA metadata was absent for the isolated worktree, so provenance was verified from the uploaded source files. The application code is unchanged from the earlier paid smoke; the merged tree adds three documentation updates.
+- Staged landing returned 200 and noncanonical-origin search returned 403. Canonical landing returned 200; foreign-origin search returned 403; invalid search operation returned 400; invalid answer receipt returned 403. These rejected requests never reached provider dispatch. Production runtime warning/error/fatal logs had no matching entries in the 15-minute verification window. Chrome rendered the page; one browser messaging error appeared without an application failure.
+- The existing database, settings, and secrets were preserved. No search or model calls were made. The read-only budget check remained **$0.017 hosted committed, $0.983 hosted remaining, and $0.078 local remaining: $1.061 total**. Visitor traffic can reduce this dated snapshot.
+
+## Initial paid-smoke release record (historical)
 
 | Item | Target or status |
 | --- | --- |
@@ -10,7 +18,7 @@ Prepared 14 November 2026; release verified 15 November 2026 (IST). **The public
 | Vercel team | `joydas0111-7078s-projects` |
 | Vercel project | `joysearch` |
 | Production origin | [joysearch.vercel.app](https://joysearch.vercel.app) |
-| Pull request | [#2](https://github.com/joydas65/JoySearch/pull/2) — open, unmerged |
+| Pull request | [#2](https://github.com/joydas65/JoySearch/pull/2) — open at the initial smoke; subsequently merged as recorded above |
 | Deployed source commit | `7685388a8c4c6eb8cd716ef68af33466d26e92d6` |
 | Published release source | [4624fc3](https://github.com/joydas65/JoySearch/commit/4624fc3abfd169bfb7fd83fe358f30c89f914ac7) |
 | Verified identical source tree | `d8cfdb4c00b28b18bf83434bc04cc6caa9b0abe8` for both deployed and published release commits; Git diff empty |
